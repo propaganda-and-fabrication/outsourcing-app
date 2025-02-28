@@ -1,5 +1,5 @@
 ---
-name: "⚙️ 기타 작업"
+name: "⚙️ chore"
 about: "설정 변경이나 일반적인 기타 작업"
 labels: chore
 ---

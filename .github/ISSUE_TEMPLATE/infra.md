@@ -1,5 +1,5 @@
 ---
-name: "🛠️ 인프라"
+name: "🛠️ infra"
 about: "인프라 관련 작업"
 labels: infra
 ---
