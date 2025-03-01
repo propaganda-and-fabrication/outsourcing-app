@@ -9,14 +9,17 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.EnumType.STRING;
+import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
+@Table(name = "stores")
 public class Store extends BaseTime {
 
     @Id
@@ -28,17 +31,17 @@ public class Store extends BaseTime {
 
     private String storeProfileUrl;
 
-    @OneToOne(mappedBy = "store", cascade = {PERSIST, REMOVE}, orphanRemoval = true)
-    private Address address;
+    @Column(nullable = false, unique = true)
+    private String storeAddress;
 
     @Column(nullable = false, unique = true)
-    private String storeNumber;
+    private String storePhoneNumber;
 
     @Column(nullable = false)
-    private LocalDateTime openedAt;
+    private LocalTime openedAt;
 
     @Column(nullable = false)
-    private LocalDateTime closedAt;
+    private LocalTime closedAt;
 
     @Enumerated(STRING)
     @Column(nullable = false)
@@ -47,23 +50,9 @@ public class Store extends BaseTime {
     @Column(nullable = false)
     private BigDecimal minPrice;
 
-    public Store(
-            String storeName,
-            String storeProfileUrl,
-            Address address,
-            String storeNumber,
-            LocalDateTime openedAt,
-            LocalDateTime closedAt,
-            StoreStatus storeStatus,
-            BigDecimal minPrice
-    ) {
+    public Store(String storeName, String storeProfileUrl, BigDecimal minPrice) {
         this.storeName = storeName;
         this.storeProfileUrl = storeProfileUrl;
-        this.address = address;
-        this.storeNumber = storeNumber;
-        this.openedAt = openedAt;
-        this.closedAt = closedAt;
-        this.storeStatus = storeStatus;
         this.minPrice = minPrice;
     }
 }
