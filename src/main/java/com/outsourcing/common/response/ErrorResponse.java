@@ -1,5 +1,7 @@
 package com.outsourcing.common.response;
 
+import java.util.List;
+
 import com.outsourcing.common.exception.ErrorCode;
 
 import lombok.Getter;
@@ -15,4 +17,10 @@ public class ErrorResponse<T> implements Response<T> {
 	public T getData() {
 		return null;
 	}
+
+	@Override
+	public List<ValidationErrorResponse.ValidationError> getErrors() {
+		return null;
+	}
+
 }
