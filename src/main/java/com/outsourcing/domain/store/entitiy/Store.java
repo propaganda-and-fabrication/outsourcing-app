@@ -2,18 +2,15 @@ package com.outsourcing.domain.store.entitiy;
 
 import com.outsourcing.common.entity.BaseTime;
 import com.outsourcing.domain.store.enums.StoreStatus;
-import com.outsourcing.domain.user.entity.Address;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static jakarta.persistence.CascadeType.PERSIST;
-import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -23,7 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Store extends BaseTime {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
