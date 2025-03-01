@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@DiscriminatorValue(value = "customer")
+@DiscriminatorValue(value = "customers")
 @NoArgsConstructor(access = PROTECTED)
 public class Customer extends User {
 

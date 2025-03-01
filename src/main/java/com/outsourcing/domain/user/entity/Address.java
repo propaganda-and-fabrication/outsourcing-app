@@ -3,6 +3,7 @@ package com.outsourcing.domain.user.entity;
 import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
 
 import com.outsourcing.common.entity.BaseTime;
 import com.outsourcing.domain.user.enums.AddressStatus;
@@ -20,8 +21,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "address")
-@NoArgsConstructor
+@Table(name = "addresses")
+@NoArgsConstructor(access = PROTECTED)
 public class Address extends BaseTime {
 
 	@Id
