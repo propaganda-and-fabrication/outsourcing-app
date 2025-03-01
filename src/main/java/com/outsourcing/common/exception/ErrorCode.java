@@ -11,7 +11,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
-	// 인증 관련 얘외
+	// 인증 관련 예외
+	INVALID_ROLE(BAD_REQUEST, "유효하지 않은 역할입니다."),
 
 	// 유저 관련 예외
 
