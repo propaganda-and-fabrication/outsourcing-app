@@ -10,8 +10,10 @@ public interface Response<T> {
 
 	T getData();
 
-	T getError();
-	
+	ErrorCode getError();
+
+	List<ValidationErrorResponse.ValidationError> getErrors();
+
 	static <T> Response<T> of(T data, String message) {
 		return new SuccessResponse<>(data, message);
 	}
