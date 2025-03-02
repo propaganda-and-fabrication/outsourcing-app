@@ -3,6 +3,8 @@ package com.outsourcing.domain.auth.service;
 import static com.outsourcing.common.exception.ErrorCode.*;
 import static com.outsourcing.domain.user.enums.UserRole.*;
 
+import java.time.Duration;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +44,7 @@ public class AuthService {
 
 		String encodedPassword = passwordEncoder.encode(password);
 		Customer newCustomer = userRepository.save(
-			new Customer(email, encodedPassword, phoneNumber, name, from(role)));
+			new Customer(email, encodedPassword, name, phoneNumber, from(role)));
 
 		String accessToken = tokenProvider.generateAccessToken(newCustomer.getId(), newCustomer.getEmail(),
 			newCustomer.getRole());
@@ -87,7 +89,8 @@ public class AuthService {
 			throw new BaseException(INVALID_TOKEN);
 		}
 
-		User getUser = userRepository.findByEmail(email).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+		User getUser = userRepository.findByEmail(email)
+			.orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
 		String newRefreshToken = jwtTokenProvider.generateRefreshToken(getUser.getEmail());
 		String newAccessToken = jwtTokenProvider.generateAccessToken(getUser.getId(), getUser.getEmail(),
@@ -113,6 +116,12 @@ public class AuthService {
 		}
 
 		long expiration = tokenProvider.extractClaims(accessTokenWithoutBearer).getExpiration().getTime();
-		refreshTokenRepository.addBlacklist(accessToken, expiration);
+		long currentTime = System.currentTimeMillis();
+
+		if (expiration - currentTime > 0) {
+			refreshTokenRepository.addBlacklist(accessToken, Duration.ofMillis(expiration - currentTime));
+		} else {
+			throw new BaseException(TOKEN_ALREADY_EXPIRED);
+		}
 	}
 }

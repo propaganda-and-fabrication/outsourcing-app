@@ -21,8 +21,8 @@ public interface Response<T> {
 		return new ErrorResponse<>(errors);
 	}
 
-	static <T> Response<T> error(T error, String message) {
-		return new ErrorResponse<>(error, message);
+	static <T> Response<T> error(T error) {
+		return new ErrorResponse<>(error);
 	}
 
 }

@@ -21,10 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalControllerAdvice {
 
 	@ExceptionHandler(BaseException.class)
-	public Response<ErrorCode> baseExceptionHandler(BaseException be, HttpServletResponse response) {
+	public Response<ErrorCodeDto> baseExceptionHandler(BaseException be, HttpServletResponse response) {
 		ErrorCode errorCode = be.getErrorCode();
 		errorCode.apply(response);
-		return Response.error(errorCode, errorCode.getMessage());
+		return Response.error(new ErrorCodeDto(errorCode));
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -44,7 +44,7 @@ public class GlobalControllerAdvice {
 	}
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	public Response<ErrorCode> methodArgumentTypeMismatchExceptionHandler(
+	public Response<ErrorCodeDto> methodArgumentTypeMismatchExceptionHandler(
 		MethodArgumentTypeMismatchException matme, HttpServletResponse response) {
 
 		String expectedType = matme.getRequiredType() == null
@@ -52,13 +52,13 @@ public class GlobalControllerAdvice {
 		log.error("[MethodArgumentTypeMismatchException] field: {}, expected: {}, value:{}", matme.getName(),
 			expectedType, matme.getValue());
 		response.setStatus(SC_BAD_REQUEST);
-		return Response.error(TYPE_MISMATCH, TYPE_MISMATCH.getMessage());
+		return Response.error(new ErrorCodeDto(TYPE_MISMATCH));
 	}
 
 	@ExceptionHandler(Exception.class)
-	public Response<ErrorCode> exceptionHandler(Exception e, HttpServletResponse response) {
+	public Response<ErrorCodeDto> exceptionHandler(Exception e, HttpServletResponse response) {
 		log.error("[Exception]: {}", e.getLocalizedMessage());
 		response.setStatus(SC_INTERNAL_SERVER_ERROR);
-		return Response.error(SERVER_NOT_WORK, SERVER_NOT_WORK.getMessage());
+		return Response.error(new ErrorCodeDto(SERVER_NOT_WORK));
 	}
 }

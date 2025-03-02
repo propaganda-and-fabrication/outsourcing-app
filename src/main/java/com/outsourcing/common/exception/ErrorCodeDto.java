@@ -1,13 +1,15 @@
 package com.outsourcing.common.exception;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public class ErrorCodeDto {
 
-	private final ErrorCode error;
+	private final String codeName;
 	private final String message;
 
+	public ErrorCodeDto(ErrorCode errorCode) {
+		this.codeName = errorCode.name();
+		this.message = errorCode.getMessage();
+	}
 }
