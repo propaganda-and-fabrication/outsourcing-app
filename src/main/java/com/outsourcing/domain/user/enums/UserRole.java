@@ -11,11 +11,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UserRole {
 
-	ROLE_CUSTOMER, ROLE_OWNER;
+	CUSTOMER("ROLE_CUSTOMER"),
+	OWNER("ROLE_OWNER");
+
+	private final String authority;
 
 	public static UserRole from(String role) {
 		for (UserRole value : values()) {
-			if (value.toString().equalsIgnoreCase(role)) {
+			if (value.authority.equalsIgnoreCase(role)) {
 				return value;
 			}
 		}
