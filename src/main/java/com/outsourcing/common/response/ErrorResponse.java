@@ -1,26 +1,29 @@
 package com.outsourcing.common.response;
 
-import java.util.List;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 
-import com.outsourcing.common.exception.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@JsonInclude(NON_NULL)
 public class ErrorResponse<T> implements Response<T> {
 
-	private final ErrorCode error;
-	private final String message;
+	private final T error;
+	private String message;
 
-	@Override
-	public T getData() {
-		return null;
+	public ErrorResponse(T error) {
+		this.error = error;
+	}
+
+	public ErrorResponse(T error, String message) {
+		this.error = error;
+		this.message = message;
 	}
 
 	@Override
-	public List<ValidationErrorResponse.ValidationError> getErrors() {
+	public T getData() {
 		return null;
 	}
 

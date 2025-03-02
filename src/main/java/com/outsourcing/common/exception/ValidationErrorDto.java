@@ -1,27 +1,15 @@
-package com.outsourcing.common.response;
+package com.outsourcing.common.exception;
 
 import java.util.List;
-
-import com.outsourcing.common.exception.ErrorCode;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class ValidationErrorResponse<T> implements Response<T> {
+public class ValidationErrorDto {
 
 	private final List<ValidationError> errors;
-
-	@Override
-	public T getData() {
-		return null;
-	}
-
-	@Override
-	public ErrorCode getError() {
-		return null;
-	}
 
 	@Getter
 	@RequiredArgsConstructor

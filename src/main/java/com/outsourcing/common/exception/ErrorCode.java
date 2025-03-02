@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.*;
 
 import org.springframework.http.HttpStatus;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -38,4 +39,8 @@ public enum ErrorCode {
 
 	private final HttpStatus httpStatus;
 	private final String message;
+
+	public void apply(HttpServletResponse response) {
+		response.setStatus(this.getHttpStatus().value());
+	}
 }
