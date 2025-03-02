@@ -1,9 +1,5 @@
 package com.outsourcing.common.response;
 
-import java.util.List;
-
-import com.outsourcing.common.exception.ErrorCode;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,13 +11,7 @@ public class SuccessResponse<T> implements Response<T> {
 	private final String message;
 
 	@Override
-	public ErrorCode getError() {
+	public T getError() {
 		return null;
 	}
-
-	@Override
-	public List<ValidationErrorResponse.ValidationError> getErrors() {
-		return null;
-	}
-
 }

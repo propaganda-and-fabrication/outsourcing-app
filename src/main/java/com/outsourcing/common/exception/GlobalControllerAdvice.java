@@ -1,6 +1,7 @@
 package com.outsourcing.common.exception;
 
 import static com.outsourcing.common.exception.ErrorCode.*;
+import static jakarta.servlet.http.HttpServletResponse.*;
 
 import java.util.List;
 
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.outsourcing.common.response.Response;
-import com.outsourcing.common.response.ValidationErrorResponse;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,40 +21,44 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalControllerAdvice {
 
 	@ExceptionHandler(BaseException.class)
-	public Response<BaseException> baseExceptionHandler(BaseException be) {
+	public Response<ErrorCodeDto> baseExceptionHandler(BaseException be, HttpServletResponse response) {
 		ErrorCode errorCode = be.getErrorCode();
-		return Response.error(errorCode, errorCode.getMessage());
+		errorCode.apply(response);
+		return Response.error(new ErrorCodeDto(errorCode));
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public Response<MethodArgumentNotValidException> methodArgumentNotValidExceptionHandler(
-		MethodArgumentNotValidException manve) {
+	public Response<List<ValidationErrorDto.ValidationError>> methodArgumentNotValidExceptionHandler(
+		MethodArgumentNotValidException manve, HttpServletResponse response) {
 
 		List<FieldError> fieldErrors = manve.getBindingResult().getFieldErrors();
-		List<ValidationErrorResponse.ValidationError> errors = fieldErrors.stream()
+		List<ValidationErrorDto.ValidationError> errors = fieldErrors.stream()
 			.map(fieldError -> {
 				String code = fieldError.getCode();
 				String field = fieldError.getField();
 				String message = fieldError.getDefaultMessage();
-				return new ValidationErrorResponse.ValidationError(code, field, message);
+				return new ValidationErrorDto.ValidationError(code, field, message);
 			}).toList();
-		return Response.validationError(errors);
+		response.setStatus(SC_BAD_REQUEST);
+		return Response.error(errors);
 	}
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	public Response<MethodArgumentTypeMismatchException> methodArgumentTypeMismatchExceptionHandler(
-		MethodArgumentTypeMismatchException matme) {
+	public Response<ErrorCodeDto> methodArgumentTypeMismatchExceptionHandler(
+		MethodArgumentTypeMismatchException matme, HttpServletResponse response) {
 
 		String expectedType = matme.getRequiredType() == null
 			? "Unknown" : matme.getRequiredType().getSimpleName();
 		log.error("[MethodArgumentTypeMismatchException] field: {}, expected: {}, value:{}", matme.getName(),
 			expectedType, matme.getValue());
-		return Response.error(TYPE_MISMATCH, TYPE_MISMATCH.getMessage());
+		response.setStatus(SC_BAD_REQUEST);
+		return Response.error(new ErrorCodeDto(TYPE_MISMATCH));
 	}
 
 	@ExceptionHandler(Exception.class)
-	public Response<Exception> exceptionHandler(Exception e) {
+	public Response<ErrorCodeDto> exceptionHandler(Exception e, HttpServletResponse response) {
 		log.error("[Exception]: {}", e.getLocalizedMessage());
-		return Response.error(SERVER_NOT_WORK, SERVER_NOT_WORK.getMessage());
+		response.setStatus(SC_INTERNAL_SERVER_ERROR);
+		return Response.error(new ErrorCodeDto(SERVER_NOT_WORK));
 	}
 }

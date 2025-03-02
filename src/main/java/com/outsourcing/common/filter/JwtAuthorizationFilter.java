@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.outsourcing.common.exception.ErrorCode;
-import com.outsourcing.common.response.Response;
+import com.outsourcing.common.exception.ErrorCodeDto;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,21 +36,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication == null || !authentication.isAuthenticated()) {
 			log.error("인증 정보 누락");
-			returnErrorResponse(MISSING_AUTHENTICATION_INFORMATION, response);
+			response.setStatus(MISSING_AUTHENTICATION_INFORMATION.getHttpStatus().value());
+			response.setContentType(APPLICATION_JSON_VALUE);
+			response.setCharacterEncoding("UTF-8");
+			ErrorCodeDto errorCodeDto = new ErrorCodeDto(MISSING_AUTHENTICATION_INFORMATION);
+
+			// 응답 구조를 맞춰주기 위해 ObjectMapper 사용
+			ObjectMapper objectMapper = new ObjectMapper();
+			response.getWriter().write(objectMapper.writeValueAsString(errorCodeDto));
 			return;
 		}
 
 		filterChain.doFilter(request, response);
 	}
 
-	private void returnErrorResponse(ErrorCode errorCode, HttpServletResponse response) throws IOException {
-		response.setStatus(errorCode.getHttpStatus().value());
-		response.setContentType(APPLICATION_JSON_VALUE);
-		response.setCharacterEncoding("UTF-8");
-		Response<ErrorCode> error = Response.error(errorCode, errorCode.getMessage());
-
-		// 응답 구조를 맞춰주기 위해 ObjectMapper 사용
-		ObjectMapper objectMapper = new ObjectMapper();
-		response.getWriter().write(objectMapper.writeValueAsString(error));
-	}
 }

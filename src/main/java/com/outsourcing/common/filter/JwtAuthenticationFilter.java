@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.common.exception.ErrorCode;
+import com.outsourcing.common.exception.ErrorCodeDto;
 import com.outsourcing.common.response.Response;
 import com.outsourcing.common.util.jwt.JwtTokenProvider;
 
@@ -83,6 +84,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			// SecurityContextHolder에 저장
 			Authentication authentication = jwtTokenProvider.getAuthentication(accessTokenWithoutBearer);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+
+			filterChain.doFilter(request, response);
 		} catch (SecurityException | MalformedJwtException e) {
 			log.error("[{}]: {}", e.getClass().getSimpleName(), e.getLocalizedMessage());
 			returnErrorResponse(INVALID_TOKEN_SIGNATURE, response);
@@ -96,15 +99,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			log.error("[{}]: {}", e.getClass().getSimpleName(), e.getLocalizedMessage());
 			returnErrorResponse(e.getErrorCode(), response);
 		}
-
-		filterChain.doFilter(request, response);
 	}
 
 	private void returnErrorResponse(ErrorCode errorCode, HttpServletResponse response) throws IOException {
 		response.setStatus(errorCode.getHttpStatus().value());
 		response.setContentType(APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("UTF-8");
-		Response<ErrorCode> error = Response.error(errorCode, errorCode.getMessage());
+		ErrorCodeDto errorCodeDto = new ErrorCodeDto(errorCode);
+		Response<ErrorCodeDto> error = Response.error(errorCodeDto);
 
 		// 응답 구조를 맞춰주기 위해 ObjectMapper 사용
 		ObjectMapper objectMapper = new ObjectMapper();
