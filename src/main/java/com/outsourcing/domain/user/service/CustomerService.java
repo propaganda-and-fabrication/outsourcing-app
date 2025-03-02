@@ -32,9 +32,9 @@ public class CustomerService {
 	private final JwtTokenProvider tokenProvider;
 
 	@Transactional(readOnly = true)
-	public CustomerResponse getUserProfile(CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
-		return CustomerResponse.of(getCustomer);
+	public CustomerResponse getCustomerProfile(CustomUserDetails currentUser) {
+		Customer getCustomerWithoutDeleted = getActiveCustomerByEmail(currentUser.getUsername());
+		return CustomerResponse.of(getCustomerWithoutDeleted);
 	}
 
 	@Transactional
@@ -55,43 +55,43 @@ public class CustomerService {
 
 	@Transactional
 	public GetAllAddressResponse addAddress(String address, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
+		Customer getCustomerWithoutDeleted = getActiveCustomerByEmail(currentUser.getUsername());
 
 		Address newAddress = Address.from(address);
-		getCustomer.addAddress(newAddress);
-		customerRepository.save(getCustomer);    // address와 동시 저장을 위해 사용
+		getCustomerWithoutDeleted.addAddress(newAddress);
+		customerRepository.save(getCustomerWithoutDeleted);    // address와 동시 저장을 위해 사용
 
-		return GetAllAddressResponse.of(addressRepository.findAllByCustomerId(getCustomer.getId()));
+		return GetAllAddressResponse.of(addressRepository.findAllByCustomerId(getCustomerWithoutDeleted.getId()));
 	}
 
 	@Transactional
 	public GetAllAddressResponse updateAddress(Long addressId, String newAddress, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
+		Customer getCustomerWithoutDeleted = getActiveCustomerByEmail(currentUser.getUsername());
 
 		Address getAddress = getAddressOrElseThrow(addressId);
 		if (getAddress.getAddress().equals(newAddress)) {
 			throw new BaseException(ADDRESS_SAME_AS_OLD);
 		}
 		getAddress.updateAddress(newAddress);
-		customerRepository.save(getCustomer);
+		customerRepository.save(getCustomerWithoutDeleted);
 
-		return GetAllAddressResponse.of(addressRepository.findAllByCustomerId(getCustomer.getId()));
+		return GetAllAddressResponse.of(addressRepository.findAllByCustomerId(getCustomerWithoutDeleted.getId()));
 	}
 
 	@Transactional(readOnly = true)
 	public GetAllAddressResponse getAllAddresses(CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
-		return GetAllAddressResponse.of(getCustomer.getAddresses());
+		Customer getCustomerWithoutDeleted = getActiveCustomerByEmail(currentUser.getUsername());
+		return GetAllAddressResponse.of(getCustomerWithoutDeleted.getAddresses());
 	}
 
 	@Transactional
 	public GetAllAddressResponse updateAddressStatus(Long addressId, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
+		Customer getCustomerWithoutDeleted = getActiveCustomerByEmail(currentUser.getUsername());
 
 		Address getAddress = getAddressOrElseThrow(addressId);
 		if (getAddress.getStatus() == INACTIVE) {
 			// 다른 모든 주소를 비활성화
-			addressRepository.findAllByCustomerId(getCustomer.getId())
+			addressRepository.findAllByCustomerId(getCustomerWithoutDeleted.getId())
 				.forEach(address -> address.updateStatus(INACTIVE));
 
 			// 요청된 주소를 활성화로 변경
@@ -101,7 +101,7 @@ public class CustomerService {
 			throw new BaseException(ADDRESS_STATUS_IS_ALREADY_ACTIVE);
 		}
 
-		boolean noActiveStatus = addressRepository.findAllByCustomerId(getCustomer.getId())
+		boolean noActiveStatus = addressRepository.findAllByCustomerId(getCustomerWithoutDeleted.getId())
 			.stream()
 			.noneMatch(address -> address.getStatus() == ACTIVE);
 
@@ -110,63 +110,63 @@ public class CustomerService {
 			throw new BaseException(NO_ACTIVE_ADDRESS);
 		}
 
-		return GetAllAddressResponse.of(getCustomer.getAddresses());
+		return GetAllAddressResponse.of(getCustomerWithoutDeleted.getAddresses());
 	}
 
 	@Transactional
 	public GetAllAddressResponse deleteAddress(Long addressId, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
+		Customer getCustomerWithoutDeleted = getActiveCustomerByEmail(currentUser.getUsername());
 		Address getAddress = getAddressOrElseThrow(addressId);
 
 		if (getAddress.getStatus() == ACTIVE) {
 			throw new BaseException(DELETE_ADDRESS_FAILED);
 		}
 
-		getCustomer.removeAddress(getAddress);    // orphanRemoval에 의해 자동 삭제
+		getCustomerWithoutDeleted.removeAddress(getAddress);    // orphanRemoval에 의해 자동 삭제
 
-		return GetAllAddressResponse.of(getCustomer.getAddresses());
+		return GetAllAddressResponse.of(getCustomerWithoutDeleted.getAddresses());
 	}
 
 	@Transactional
 	public CustomerResponse updatePhoneNumber(String newPhoneNumber,
 		CustomUserDetails currentUser) {
-		Customer getCustomer = getCustomerOrElseThrow(currentUser.getUsername());
+		Customer getOwnerWithDeleted = getCustomerOrElseThrow(currentUser.getUsername());
 
 		if (customerRepository.existsByPhoneNumber(newPhoneNumber)) {
 			throw new BaseException(PHONE_NUMBER_DUPLICATED);
 		}
 
-		if (getCustomer.getPhoneNumber().equals(newPhoneNumber)) {
+		if (getOwnerWithDeleted.getPhoneNumber().equals(newPhoneNumber)) {
 			throw new BaseException(PHONE_NUMBER_SAME_AS_OLD);
 		}
 
-		getCustomer.changePhoneNumber(newPhoneNumber);
+		getOwnerWithDeleted.changePhoneNumber(newPhoneNumber);
 
-		return CustomerResponse.of(getCustomer);
+		return CustomerResponse.of(getOwnerWithDeleted);
 	}
 
 	@Transactional
 	public CustomerResponse updatePassword(String oldPassword, String newPassword, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
+		Customer getCustomerWithoutDeleted = getActiveCustomerByEmail(currentUser.getUsername());
 
-		if (!passwordEncoder.matches(oldPassword, getCustomer.getPassword())) {
+		if (!passwordEncoder.matches(oldPassword, getCustomerWithoutDeleted.getPassword())) {
 			throw new BaseException(PASSWORD_NOT_MATCHED);
 		}
 
-		if (passwordEncoder.matches(newPassword, getCustomer.getPassword())) {
+		if (passwordEncoder.matches(newPassword, getCustomerWithoutDeleted.getPassword())) {
 			throw new BaseException(PASSWORD_SAME_AS_OLD);
 		}
 
-		getCustomer.changePassword(passwordEncoder.encode(newPassword));
-		return CustomerResponse.of(getCustomer);
+		getCustomerWithoutDeleted.changePassword(passwordEncoder.encode(newPassword));
+		return CustomerResponse.of(getCustomerWithoutDeleted);
 	}
 
 	@Transactional
 	public CustomerResponse updateProfileUrl(String profileUrl, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
-		getCustomer.changeProfileUrl(profileUrl);
+		Customer getCustomerWithoutDeleted = getActiveCustomerByEmail(currentUser.getUsername());
+		getCustomerWithoutDeleted.changeProfileUrl(profileUrl);
 
-		return CustomerResponse.of(getCustomer);
+		return CustomerResponse.of(getCustomerWithoutDeleted);
 	}
 
 	@Transactional

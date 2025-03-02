@@ -1,4 +1,4 @@
-package com.outsourcing.domain.user.dto.request.customer;
+package com.outsourcing.domain.user.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
