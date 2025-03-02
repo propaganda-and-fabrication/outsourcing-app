@@ -28,15 +28,15 @@ public class AuthController {
 
 	@PostMapping("/v1/auth/customers")
 	public Response<TokenResponse> signUpCustomer(@Valid @RequestBody CustomerSignUpRequest request) {
-		TokenResponse tokenResponse = authService.signUp(request.getEmail(), request.getPassword(), request.getName(),
-			request.getPhoneNumber(), request.getUserRole());
+		TokenResponse tokenResponse = authService.signUpCustomer(request.getEmail(), request.getPassword(),
+			request.getName(), request.getPhoneNumber(), request.getUserRole(), request.getAddress());
 		return Response.of(tokenResponse, "Customer 회원가입 성공");
 	}
 
 	@PostMapping("/v1/auth/owners")
 	public Response<TokenResponse> signUpOwners(@Valid @RequestBody OwnerSignUpRequest request) {
-		TokenResponse tokenResponse = authService.signUp(request.getEmail(), request.getPassword(), request.getName(),
-			request.getPhoneNumber(), request.getUserRole());
+		TokenResponse tokenResponse = authService.signUpOwner(request.getEmail(), request.getPassword(),
+			request.getName(), request.getPhoneNumber(), request.getUserRole());
 		return Response.of(tokenResponse, "Owner 회원가입 성공");
 	}
 
@@ -54,8 +54,8 @@ public class AuthController {
 
 	@PostMapping("/v1/auth/logout")
 	public Response<Void> logout(@Valid @RequestBody LogoutRequest request,
-		@AuthenticationPrincipal CustomUserDetails userDetails) {
-		authService.logout(request.getAccessToken(), request.getRefreshToken(), userDetails);
+		@AuthenticationPrincipal CustomUserDetails currentUser) {
+		authService.logout(request.getAccessToken(), request.getRefreshToken(), currentUser);
 		return Response.of(null, "로그아웃 되었습니다.");
 	}
 }

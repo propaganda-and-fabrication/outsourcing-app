@@ -1,5 +1,6 @@
 package com.outsourcing.domain.user.entity;
 
+import static com.outsourcing.domain.user.enums.AddressStatus.*;
 import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
@@ -40,12 +41,24 @@ public class Address extends BaseTime {
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
-	public Address(String address) {
+	private Address(String address) {
+		this.address = address;
+		this.status = INACTIVE;
+	}
+
+	public static Address from(String address) {
+		return new Address(address);
+	}
+
+	public void updateAddress(String address) {
 		this.address = address;
 	}
 
-	public void addAddress(String address) {
-		this.address = address;
-		this.customer.getAddresses().add(this);
+	public void updateStatus(AddressStatus status) {
+		this.status = status;
+	}
+
+	protected void addCustomer(Customer customer) {
+		this.customer = customer;
 	}
 }
