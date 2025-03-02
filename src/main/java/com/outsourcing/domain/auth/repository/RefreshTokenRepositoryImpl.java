@@ -51,10 +51,12 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
 		return Optional.of(new RefreshToken(email, refreshToken));
 	}
 
+	@Override
 	public String getKey(String email) {
 		return redisTemplate.opsForValue().get(email);
 	}
 
+	@Override
 	public void addBlacklist(String accessToken, long expiration) {
 		redisTemplate.opsForValue().set("blacklist:" + accessToken, "logout", expiration, MILLISECONDS);
 	}

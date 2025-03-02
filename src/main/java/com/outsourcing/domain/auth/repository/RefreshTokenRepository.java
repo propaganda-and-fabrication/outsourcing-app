@@ -11,4 +11,8 @@ public interface RefreshTokenRepository {
 	Optional<RefreshToken> findByEmail(String email);
 
 	void delete(String email);
+
+	String getKey(String email);
+
+	void addBlacklist(String accessToken, long expiration);
 }
