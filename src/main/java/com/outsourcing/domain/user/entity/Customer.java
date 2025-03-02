@@ -25,8 +25,8 @@ public class Customer extends User {
 	@Column(unique = true)
 	private String nickname;
 
-	@OneToMany(mappedBy = "customer", cascade = {PERSIST, REMOVE}, orphanRemoval = true)
-	private List<Address> addresses = new ArrayList<>();
+	@OneToMany(mappedBy = "customer", cascade = ALL, orphanRemoval = true)
+	private final List<Address> addresses = new ArrayList<>();
 
 	public Customer(String email, String password, String name, String phoneNumber,
 		UserRole role) {
@@ -39,13 +39,13 @@ public class Customer extends User {
 		this.nickname = nickname;
 	}
 
-	public static Customer toCustomer(User user) {
-		return new Customer(
-			user.getEmail(),
-			user.getPassword(),
-			user.getName(),
-			user.getPhoneNumber(),
-			user.getRole()
-		);
+	public void addAddress(Address address) {
+		addresses.add(address);
+		address.addCustomer(this); // 양방향 관계 설정
+	}
+
+	public void removeAddress(Address address) {
+		addresses.remove(address);
+		address.addCustomer(null); // 양방향 관계 해제
 	}
 }

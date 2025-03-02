@@ -1,7 +1,9 @@
 package com.outsourcing.domain.auth.repository;
 
+import static com.outsourcing.common.exception.ErrorCode.*;
 import static java.util.concurrent.TimeUnit.*;
 
+import java.time.Duration;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
+import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.domain.auth.entity.RefreshToken;
 
 import lombok.RequiredArgsConstructor;
@@ -58,7 +61,13 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
 
 	@Override
 	public void addBlacklist(String accessToken, long expiration) {
-		redisTemplate.opsForValue().set("blacklist:" + accessToken, "logout", expiration, MILLISECONDS);
+		long currentTime = System.currentTimeMillis();
+		if (expiration - currentTime > 0) {
+			redisTemplate.opsForValue()
+				.set("blacklist:" + accessToken, "logout", Duration.ofMillis(expiration - currentTime));
+		} else {
+			throw new BaseException(TOKEN_ALREADY_EXPIRED);
+		}
 	}
 
 	@Override

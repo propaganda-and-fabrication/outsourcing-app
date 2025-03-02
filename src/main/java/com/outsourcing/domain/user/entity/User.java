@@ -42,6 +42,7 @@ public class User extends BaseTime {
 	@Column(nullable = false)
 	private String name;
 
+	//TODO: 각 역할에 맞게 기본 이미지 경로 넣어줘야 함
 	private String profileUrl;
 
 	@Column(nullable = false, unique = true)

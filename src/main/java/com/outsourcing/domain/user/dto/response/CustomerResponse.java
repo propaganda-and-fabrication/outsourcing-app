@@ -2,8 +2,10 @@ package com.outsourcing.domain.user.dto.response;
 
 import com.outsourcing.domain.user.entity.Customer;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class CustomerResponse {
 
