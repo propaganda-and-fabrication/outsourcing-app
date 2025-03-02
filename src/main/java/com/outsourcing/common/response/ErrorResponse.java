@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class ErrorResponse<T> implements Response<T> {
 
 	private final ErrorCode error;
+	private final String message;
 
 	@Override
 	public T getData() {

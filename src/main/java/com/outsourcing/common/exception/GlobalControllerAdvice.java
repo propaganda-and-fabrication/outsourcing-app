@@ -22,7 +22,7 @@ public class GlobalControllerAdvice {
 	@ExceptionHandler(BaseException.class)
 	public Response<BaseException> baseExceptionHandler(BaseException be) {
 		ErrorCode errorCode = be.getErrorCode();
-		return Response.error(errorCode);
+		return Response.error(errorCode, errorCode.getMessage());
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -48,12 +48,12 @@ public class GlobalControllerAdvice {
 			? "Unknown" : matme.getRequiredType().getSimpleName();
 		log.error("[MethodArgumentTypeMismatchException] field: {}, expected: {}, value:{}", matme.getName(),
 			expectedType, matme.getValue());
-		return Response.error(TYPE_MISMATCH);
+		return Response.error(TYPE_MISMATCH, TYPE_MISMATCH.getMessage());
 	}
 
 	@ExceptionHandler(Exception.class)
 	public Response<Exception> exceptionHandler(Exception e) {
 		log.error("[Exception]: {}", e.getLocalizedMessage());
-		return Response.error(SERVER_NOT_WORK);
+		return Response.error(SERVER_NOT_WORK, SERVER_NOT_WORK.getMessage());
 	}
 }

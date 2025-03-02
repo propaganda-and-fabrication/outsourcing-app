@@ -18,8 +18,8 @@ public interface Response<T> {
 		return new SuccessResponse<>(data, message);
 	}
 
-	static <T> Response<T> error(ErrorCode code) {
-		return new ErrorResponse<>(code);
+	static <T> Response<T> error(ErrorCode code, String message) {
+		return new ErrorResponse<>(code, message);
 	}
 
 	static <T> Response<T> validationError(List<ValidationErrorResponse.ValidationError> errors) {

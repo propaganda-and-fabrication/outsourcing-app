@@ -31,7 +31,8 @@ public class Customer extends User {
 	public Customer(String email, String password, String name, String phoneNumber,
 		UserRole role) {
 		super(email, password, name, phoneNumber, role);
-		this.nickname = email + "_" + UUID.randomUUID().toString().substring(0, 8);
+		int idx = email.indexOf("@");
+		this.nickname = email.substring(0, idx) + "_" + UUID.randomUUID().toString().substring(0, 8);
 	}
 
 	public void changeNickname(String nickname) {

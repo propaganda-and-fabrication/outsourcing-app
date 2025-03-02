@@ -44,6 +44,9 @@ dependencies {
     // mysql driver
     runtimeOnly 'com.mysql:mysql-connector-j'
 
+    // redis driver + access
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // jjwt
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
