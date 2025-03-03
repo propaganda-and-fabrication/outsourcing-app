@@ -38,3 +38,6 @@ out/
 
 ### application.yml ###
 src/main/resources/local/**
+
+### .http ###
+src/main/java/com/outsourcing/*.http
