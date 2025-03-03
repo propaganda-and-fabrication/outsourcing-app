@@ -28,36 +28,36 @@ public class OwnerService {
 
 	@Transactional(readOnly = true)
 	public OwnerResponse getOwnerProfile(CustomUserDetails currentUser) {
-		Owner getOwnerWithoutDeleted = getActiveOwnerByEmail(currentUser.getUsername());
-		return OwnerResponse.of(getOwnerWithoutDeleted);
+		Owner getOwner = getActiveOwnerByEmail(currentUser.getUsername());
+		return OwnerResponse.of(getOwner);
 	}
 
 	@Transactional
 	public OwnerResponse updatePhoneNumber(String newPhoneNumber, CustomUserDetails currentUser) {
-		Owner getOwnerWithDeleted = getOwnerOrElseThrow(currentUser.getUsername());
+		Owner getOwner = getOwnerOrElseThrow(currentUser.getUsername());
 
-		if (getOwnerWithDeleted.getPhoneNumber().equals(newPhoneNumber)) {
+		if (getOwner.getPhoneNumber().equals(newPhoneNumber)) {
 			throw new BaseException(PHONE_NUMBER_SAME_AS_OLD);
 		}
 
-		getOwnerWithDeleted.changePhoneNumber(newPhoneNumber);
-		return OwnerResponse.of(getOwnerWithDeleted);
+		getOwner.changePhoneNumber(newPhoneNumber);
+		return OwnerResponse.of(getOwner);
 	}
 
 	@Transactional
 	public OwnerResponse updatePassword(String oldPassword, String newPassword, CustomUserDetails currentUser) {
-		Owner getOwnerWithoutDeleted = getActiveOwnerByEmail(currentUser.getUsername());
+		Owner getOwner = getActiveOwnerByEmail(currentUser.getUsername());
 
-		if (!passwordEncoder.matches(oldPassword, getOwnerWithoutDeleted.getPassword())) {
+		if (!passwordEncoder.matches(oldPassword, getOwner.getPassword())) {
 			throw new BaseException(PASSWORD_NOT_MATCHED);
 		}
 
-		if (passwordEncoder.matches(newPassword, getOwnerWithoutDeleted.getPassword())) {
+		if (passwordEncoder.matches(newPassword, getOwner.getPassword())) {
 			throw new BaseException(PASSWORD_SAME_AS_OLD);
 		}
 
-		getOwnerWithoutDeleted.changePassword(passwordEncoder.encode(newPassword));
-		return OwnerResponse.of(getOwnerWithoutDeleted);
+		getOwner.changePassword(passwordEncoder.encode(newPassword));
+		return OwnerResponse.of(getOwner);
 	}
 
 	@Transactional

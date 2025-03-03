@@ -44,8 +44,7 @@ public class AuthCustomerService {
 		String encodedPassword = passwordEncoder.encode(password);
 		Customer newCustomer = new Customer(email, encodedPassword, name, phoneNumber, from(role));
 
-		Address newAddress = Address.from(address);
-		newAddress.updateStatus(ACTIVE);
+		Address newAddress = Address.from(address, ACTIVE);
 		newCustomer.addAddress(newAddress);
 		customerRepository.save(newCustomer);
 

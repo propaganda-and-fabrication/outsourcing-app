@@ -10,6 +10,6 @@ import lombok.RequiredArgsConstructor;
 public class UpdatePhoneNumberRequest {
 
 	@NotBlank
-	@Pattern(regexp = "^(010)[0-9]{3,4}[0-9]{4}$", message = "휴대전화 번호 형식이 아닙니다.")
+	@Pattern(regexp = "^(010)[0-9]{3,4}[0-9]{4}$", message = "전화번호 형식이 올바르지 않습니다.")
 	private final String newPhoneNumber;
 }

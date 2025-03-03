@@ -28,7 +28,7 @@ public class OwnerController {
 	private final OwnerService ownerService;
 
 	@GetMapping("/v1/owners/me")
-	public Response<OwnerResponse> getUserProfile(@AuthenticationPrincipal CustomUserDetails currentUser) {
+	public Response<OwnerResponse> getOwnerProfile(@AuthenticationPrincipal CustomUserDetails currentUser) {
 		OwnerResponse response = ownerService.getOwnerProfile(currentUser);
 		return Response.of(response, "Owner 프로필 조회 성공");
 	}
@@ -42,7 +42,7 @@ public class OwnerController {
 	}
 
 	@PatchMapping("/v1/owners/me/password")
-	public Response<OwnerResponse> updatePhoneNumber(@Valid @RequestBody UpdatePasswordRequest request,
+	public Response<OwnerResponse> updatePassword(@Valid @RequestBody UpdatePasswordRequest request,
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
 		OwnerResponse response = ownerService.updatePassword(request.getOldPassword(),
@@ -51,7 +51,7 @@ public class OwnerController {
 	}
 
 	@PostMapping("/v1/owners/me/delete")
-	public Response<Void> deleteCustomer(@Valid @RequestBody DeleteUserRequest request,
+	public Response<Void> deleteOwner(@Valid @RequestBody DeleteUserRequest request,
 		@AuthenticationPrincipal CustomUserDetails currentUser, HttpServletRequest httpServletRequest) {
 
 		String accessToken = httpServletRequest.getHeader("Authorization");
