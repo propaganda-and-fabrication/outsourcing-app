@@ -1,6 +1,7 @@
 package com.outsourcing.domain.store.dto.request;
 
 import com.outsourcing.domain.store.enums.StoreStatus;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 
 @Getter
-public class UpdateStoreRequsetDto {
+public class CreateStoreRequest {
 
     @NotBlank
     private String storeName;
@@ -27,6 +28,7 @@ public class UpdateStoreRequsetDto {
     private String storePhoneNumber;
 
     @NotNull
+    @Min(0)
     private BigDecimal minPrice;
 
     @NotNull

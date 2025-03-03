@@ -10,7 +10,7 @@ import java.time.LocalTime;
 
 @Getter
 @RequiredArgsConstructor
-public class StoreResponseDto {
+public class StoreResponseForOwner {
 
     private final Long id;
     private final String storeName;
@@ -22,8 +22,8 @@ public class StoreResponseDto {
     private final StoreStatus storeStatus;
     private final BigDecimal minPrice;
 
-    public static StoreResponseDto of(Store store) {
-        return new StoreResponseDto(
+    public static StoreResponseForOwner of(Store store) {
+        return new StoreResponseForOwner(
                 store.getId(),
                 store.getStoreName(),
                 store.getStoreProfileUrl(),
