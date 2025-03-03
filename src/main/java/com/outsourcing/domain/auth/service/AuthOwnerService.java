@@ -11,7 +11,7 @@ import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.common.util.jwt.JwtTokenProvider;
 import com.outsourcing.domain.auth.dto.response.TokenResponse;
 import com.outsourcing.domain.auth.entity.RefreshToken;
-import com.outsourcing.domain.auth.repository.RefreshTokenRepositoryImpl;
+import com.outsourcing.domain.auth.repository.RefreshTokenRepository;
 import com.outsourcing.domain.user.entity.Owner;
 import com.outsourcing.domain.user.repository.OwnerRepository;
 
@@ -23,8 +23,8 @@ public class AuthOwnerService {
 
 	private final OwnerRepository ownerRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtTokenProvider tokenProvider;
-	private final RefreshTokenRepositoryImpl refreshTokenRepository;
 
 	@Transactional
 	public TokenResponse signUpOwner(String email, String password, String name, String phoneNumber, String role) {
@@ -54,18 +54,18 @@ public class AuthOwnerService {
 
 	@Transactional
 	public TokenResponse signInOwner(String email, String password) {
-		Owner getOwnerWithoutDeleted = ownerRepository.findByEmailAndDeletedAt(email)
+		Owner getOwner = ownerRepository.findByEmailAndDeletedAt(email)
 			.orElseThrow(() -> new BaseException(LOGIN_FAILED));
 
-		checkPassword(password, getOwnerWithoutDeleted.getPassword());
+		checkPassword(password, getOwner.getPassword());
 
-		String accessToken = tokenProvider.generateAccessToken(getOwnerWithoutDeleted.getId(),
-			getOwnerWithoutDeleted.getEmail(), getOwnerWithoutDeleted.getRole());
-		String refreshToken = tokenProvider.generateRefreshToken(getOwnerWithoutDeleted.getEmail());
+		String accessToken = tokenProvider.generateAccessToken(getOwner.getId(), getOwner.getEmail(),
+			getOwner.getRole());
+		String refreshToken = tokenProvider.generateRefreshToken(getOwner.getEmail());
 
-		refreshTokenRepository.save(new RefreshToken(getOwnerWithoutDeleted.getEmail(), refreshToken));
+		refreshTokenRepository.save(new RefreshToken(getOwner.getEmail(), refreshToken));
 
-		return TokenResponse.of(getOwnerWithoutDeleted.getId(), accessToken, refreshToken);
+		return TokenResponse.of(getOwner.getId(), accessToken, refreshToken);
 	}
 
 	@Transactional
@@ -83,16 +83,16 @@ public class AuthOwnerService {
 			throw new BaseException(INVALID_TOKEN);
 		}
 
-		Owner getOwnerWithoutDeleted = getActiveOwnerByEmail(email);
+		Owner getOwner = getActiveOwnerByEmail(email);
 
-		String newRefreshToken = tokenProvider.generateRefreshToken(getOwnerWithoutDeleted.getEmail());
-		String newAccessToken = tokenProvider.generateAccessToken(getOwnerWithoutDeleted.getId(),
-			getOwnerWithoutDeleted.getEmail(), getOwnerWithoutDeleted.getRole());
+		String newRefreshToken = tokenProvider.generateRefreshToken(getOwner.getEmail());
+		String newAccessToken = tokenProvider.generateAccessToken(getOwner.getId(), getOwner.getEmail(),
+			getOwner.getRole());
 
 		getRefreshToken.updateRefreshToken(newRefreshToken);
 		refreshTokenRepository.save(getRefreshToken);
 
-		return TokenResponse.of(getOwnerWithoutDeleted.getId(), newAccessToken, newRefreshToken);
+		return TokenResponse.of(getOwner.getId(), newAccessToken, newRefreshToken);
 	}
 
 	private Owner getActiveOwnerByEmail(String email) {

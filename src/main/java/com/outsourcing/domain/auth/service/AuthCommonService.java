@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.common.util.jwt.JwtTokenProvider;
-import com.outsourcing.domain.auth.repository.RefreshTokenRepositoryImpl;
+import com.outsourcing.domain.auth.repository.RefreshTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthCommonService {
 
 	private final JwtTokenProvider tokenProvider;
-	private final RefreshTokenRepositoryImpl refreshTokenRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Transactional
 	public void logout(String accessToken, String refreshToken, CustomUserDetails currentUser) {
