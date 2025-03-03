@@ -3,7 +3,9 @@ package com.outsourcing.domain.menu.entity;
 import java.time.LocalDateTime;
 
 import com.outsourcing.common.entity.BaseTime;
+import com.outsourcing.domain.menu.dto.request.MenuRequest;
 import com.outsourcing.domain.menu.enums.MenuStatus;
+import com.outsourcing.domain.store.entity.Store;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -52,12 +54,24 @@ public class Menu extends BaseTime {
 		this.status = status;
 	}
 
-	public void updateMenu(String name, int price, String description, String imageUrl, MenuStatus status) {
-		this.name = name;
-		this.price = price;
-		this.description = description;
-		this.imageUrl = imageUrl;
-		this.status = status;
+	public static Menu of(Store store, MenuRequest request) {
+		return new Menu(
+			store,
+			request.getName(),
+			request.getPrice(),
+			request.getDescription(),
+			request.getImageUrl(),
+			request.getStatus()
+		);
+	}
+
+	public static Menu update(Menu menu, String name, int price, String description, String imageUrl,
+		MenuStatus status) {
+		menu.price = price;
+		menu.description = description;
+		menu.imageUrl = imageUrl;
+		menu.status = status;
+		return menu;
 	}
 
 	public void deleteMenu() {

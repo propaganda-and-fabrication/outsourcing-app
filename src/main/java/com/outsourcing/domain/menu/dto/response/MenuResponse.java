@@ -1,10 +1,13 @@
 package com.outsourcing.domain.menu.dto.response;
 
+import com.outsourcing.domain.menu.entity.Menu;
 import com.outsourcing.domain.menu.enums.MenuStatus;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class MenuResponse {
 
 	private final Long id;
@@ -15,14 +18,15 @@ public class MenuResponse {
 	private String imageUrl;
 	private final MenuStatus status;
 
-	public MenuResponse(Long id, Long storeId, String name, int price, String description, String imageUrl,
-		MenuStatus status) {
-		this.id = id;
-		this.storeId = storeId;
-		this.name = name;
-		this.price = price;
-		this.description = description;
-		this.imageUrl = imageUrl;
-		this.status = status;
+	public static MenuResponse of(Menu menu) {
+		return new MenuResponse(
+			menu.getId(),
+			menu.getStore().getId(),
+			menu.getName(),
+			menu.getPrice(),
+			menu.getDescription(),
+			menu.getImageUrl(),
+			menu.getStatus()
+		);
 	}
 }
