@@ -12,7 +12,7 @@ import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.common.util.jwt.JwtTokenProvider;
 import com.outsourcing.domain.auth.dto.response.TokenResponse;
 import com.outsourcing.domain.auth.entity.RefreshToken;
-import com.outsourcing.domain.auth.repository.RefreshTokenRepositoryImpl;
+import com.outsourcing.domain.auth.repository.RefreshTokenRepository;
 import com.outsourcing.domain.user.entity.Address;
 import com.outsourcing.domain.user.entity.Customer;
 import com.outsourcing.domain.user.repository.CustomerRepository;
@@ -25,8 +25,8 @@ public class AuthCustomerService {
 
 	private final CustomerRepository customerRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtTokenProvider tokenProvider;
-	private final RefreshTokenRepositoryImpl refreshTokenRepository;
 
 	@Transactional
 	public TokenResponse signUpCustomer(String email, String password, String name, String phoneNumber, String role,
@@ -61,18 +61,18 @@ public class AuthCustomerService {
 
 	@Transactional
 	public TokenResponse signInCustomer(String email, String password) {
-		Customer getCustomerWithoutDeleted = customerRepository.findByEmailAndDeletedAt(email)
+		Customer getCustomer = customerRepository.findByEmailAndDeletedAt(email)
 			.orElseThrow(() -> new BaseException(LOGIN_FAILED));
 
-		checkPassword(password, getCustomerWithoutDeleted.getPassword());
+		checkPassword(password, getCustomer.getPassword());
 
-		String accessToken = tokenProvider.generateAccessToken(getCustomerWithoutDeleted.getId(),
-			getCustomerWithoutDeleted.getEmail(), getCustomerWithoutDeleted.getRole());
-		String refreshToken = tokenProvider.generateRefreshToken(getCustomerWithoutDeleted.getEmail());
+		String accessToken = tokenProvider.generateAccessToken(getCustomer.getId(),
+			getCustomer.getEmail(), getCustomer.getRole());
+		String refreshToken = tokenProvider.generateRefreshToken(getCustomer.getEmail());
 
-		refreshTokenRepository.save(new RefreshToken(getCustomerWithoutDeleted.getEmail(), refreshToken));
+		refreshTokenRepository.save(new RefreshToken(getCustomer.getEmail(), refreshToken));
 
-		return TokenResponse.of(getCustomerWithoutDeleted.getId(), accessToken, refreshToken);
+		return TokenResponse.of(getCustomer.getId(), accessToken, refreshToken);
 	}
 
 	@Transactional
@@ -90,17 +90,16 @@ public class AuthCustomerService {
 			throw new BaseException(INVALID_TOKEN);
 		}
 
-		Customer getCustomerWithoutDeleted = getActiveCustomerByEmail(email);
+		Customer getCustomer = getActiveCustomerByEmail(email);
 
-		String newRefreshToken = tokenProvider.generateRefreshToken(getCustomerWithoutDeleted.getEmail());
-		String newAccessToken = tokenProvider.generateAccessToken(getCustomerWithoutDeleted.getId(),
-			getCustomerWithoutDeleted.getEmail(),
-			getCustomerWithoutDeleted.getRole());
+		String newRefreshToken = tokenProvider.generateRefreshToken(getCustomer.getEmail());
+		String newAccessToken = tokenProvider.generateAccessToken(getCustomer.getId(), getCustomer.getEmail(),
+			getCustomer.getRole());
 
 		getRefreshToken.updateRefreshToken(newRefreshToken);
 		refreshTokenRepository.save(getRefreshToken);
 
-		return TokenResponse.of(getCustomerWithoutDeleted.getId(), newAccessToken, newRefreshToken);
+		return TokenResponse.of(getCustomer.getId(), newAccessToken, newRefreshToken);
 	}
 
 	private Customer getActiveCustomerByEmail(String email) {

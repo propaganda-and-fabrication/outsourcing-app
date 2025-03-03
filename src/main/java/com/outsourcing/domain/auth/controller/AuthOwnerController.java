@@ -37,7 +37,7 @@ public class AuthOwnerController {
 	}
 
 	@PostMapping("/v1/auth/owners/reissue")
-	public Response<TokenResponse> OwnerTokenReissue(@Valid @RequestBody TokenReissueRequest request) {
+	public Response<TokenResponse> ownerTokenReissue(@Valid @RequestBody TokenReissueRequest request) {
 		TokenResponse tokenResponse = ownerService.ownerTokenReissue(request.getRefreshToken());
 		return Response.of(tokenResponse, "Owner 토큰 재발급 성공");
 	}

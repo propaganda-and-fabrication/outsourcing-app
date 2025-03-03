@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.common.util.jwt.JwtTokenProvider;
 import com.outsourcing.domain.auth.entity.RefreshToken;
-import com.outsourcing.domain.auth.repository.RefreshTokenRepositoryImpl;
+import com.outsourcing.domain.auth.repository.RefreshTokenRepository;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
 import com.outsourcing.domain.user.dto.response.OwnerResponse;
 import com.outsourcing.domain.user.entity.Owner;
@@ -23,7 +23,7 @@ public class OwnerService {
 
 	private final OwnerRepository ownerRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final RefreshTokenRepositoryImpl refreshTokenRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtTokenProvider tokenProvider;
 
 	@Transactional(readOnly = true)
