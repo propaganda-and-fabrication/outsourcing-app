@@ -9,4 +9,12 @@ import org.springframework.stereotype.Service;
 public class StoreService {
 
     private final StoreRepository storeRepository;
+
+//    @Transactional
+//    public StoreResponseForOwner createStore(
+//            CustomUserDetails currentOwner,
+//            @Valid CreateStoreRequest request
+//    ) {
+//
+//    }
 }

@@ -1,6 +1,7 @@
 package com.outsourcing.domain.store.dto.response;
 
 import com.outsourcing.domain.store.entitiy.Store;
+import com.outsourcing.domain.store.enums.StoreStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -9,7 +10,7 @@ import java.time.LocalTime;
 
 @Getter
 @RequiredArgsConstructor
-public class StoreResponseForCustomer {
+public class StoreOwnerResponse {
 
     private final Long id;
     private final String storeName;
@@ -18,10 +19,11 @@ public class StoreResponseForCustomer {
     private final String storePhoneNumber;
     private final LocalTime openedAt;
     private final LocalTime closedAt;
+    private final StoreStatus storeStatus;
     private final BigDecimal minPrice;
 
-    public static StoreResponseForCustomer of(Store store) {
-        return new StoreResponseForCustomer(
+    public static StoreOwnerResponse of(Store store) {
+        return new StoreOwnerResponse(
                 store.getId(),
                 store.getStoreName(),
                 store.getStoreProfileUrl(),
@@ -29,6 +31,7 @@ public class StoreResponseForCustomer {
                 store.getStorePhoneNumber(),
                 store.getOpenedAt(),
                 store.getClosedAt(),
+                store.getStoreStatus(),
                 store.getMinPrice()
         );
     }
