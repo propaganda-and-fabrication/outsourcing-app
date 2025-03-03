@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.outsourcing.common.response.Response;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
+import com.outsourcing.domain.user.dto.request.DeleteUserRequest;
+import com.outsourcing.domain.user.dto.request.UpdatePasswordRequest;
+import com.outsourcing.domain.user.dto.request.UpdatePhoneNumberRequest;
 import com.outsourcing.domain.user.dto.request.customer.AddAddressRequest;
-import com.outsourcing.domain.user.dto.request.customer.DeleteCustomerRequest;
 import com.outsourcing.domain.user.dto.request.customer.UpdateAddressRequest;
 import com.outsourcing.domain.user.dto.request.customer.UpdateNicknameRequest;
-import com.outsourcing.domain.user.dto.request.customer.UpdatePasswordRequest;
-import com.outsourcing.domain.user.dto.request.customer.UpdatePhoneNumberRequest;
 import com.outsourcing.domain.user.dto.request.customer.UpdateProfileUrlRequest;
 import com.outsourcing.domain.user.dto.response.CustomerResponse;
 import com.outsourcing.domain.user.dto.response.GetAllAddressResponse;
@@ -36,7 +36,7 @@ public class CustomerController {
 
 	@GetMapping("/v1/customers/me")
 	public Response<CustomerResponse> getUserProfile(@AuthenticationPrincipal CustomUserDetails currentUser) {
-		CustomerResponse response = customerService.getUserProfile(currentUser);
+		CustomerResponse response = customerService.getCustomerProfile(currentUser);
 		return Response.of(response, "Customer 프로필 조회 성공");
 	}
 
@@ -115,7 +115,7 @@ public class CustomerController {
 	}
 
 	@PostMapping("/v1/customers/me/delete")
-	public Response<Void> deleteCustomer(@Valid @RequestBody DeleteCustomerRequest request,
+	public Response<Void> deleteCustomer(@Valid @RequestBody DeleteUserRequest request,
 		@AuthenticationPrincipal CustomUserDetails currentUser, HttpServletRequest httpServletRequest) {
 
 		String accessToken = httpServletRequest.getHeader("Authorization");
