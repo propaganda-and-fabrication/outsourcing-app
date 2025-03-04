@@ -40,13 +40,14 @@ public class Address extends BaseTime {
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
-	private Address(String address, AddressStatus status) {
+	private Address(String address, AddressStatus status, Customer customer) {
 		this.address = address;
 		this.status = status;
+		this.customer = customer;
 	}
 
-	public static Address from(String address, AddressStatus status) {
-		return new Address(address, status);
+	public static Address from(String address, AddressStatus status, Customer customer) {
+		return new Address(address, status, customer);
 	}
 
 	public void updateAddress(String address) {

@@ -75,7 +75,7 @@ public class CustomerController {
 
 	@GetMapping("/v1/customers/me/addresses")
 	public Response<GetAllAddressResponse> getAllAddresses(@AuthenticationPrincipal CustomUserDetails currentUser) {
-		GetAllAddressResponse response = customerService.getAllAddresses(currentUser);
+		GetAllAddressResponse response = customerService.getAllAddressResponse(currentUser);
 		return Response.of(response, "Customer 주소 전체 조회 성공");
 	}
 

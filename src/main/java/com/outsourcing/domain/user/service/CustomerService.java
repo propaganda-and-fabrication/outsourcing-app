@@ -44,10 +44,10 @@ public class CustomerService {
 		}
 
 		Customer getCustomer = getCustomerOrElseThrow(currentUser.getUsername());
-
 		if (getCustomer.getNickname().equals(changeNickname)) {
 			throw new BaseException(NICKNAME_SAME_AS_OLD);
 		}
+
 		getCustomer.changeNickname(changeNickname);
 
 		return CustomerResponse.of(getCustomer);
@@ -58,44 +58,38 @@ public class CustomerService {
 		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
 
 		String strippedAddress = address.strip();
+		addressRepository.save(Address.from(strippedAddress, INACTIVE, getCustomer));
 
-		Address newAddress = Address.from(strippedAddress, INACTIVE);
-		getCustomer.addAddress(newAddress);
-		customerRepository.save(getCustomer);    // address와 동시 저장을 위해 사용
-
-		return GetAllAddressResponse.of(addressRepository.findAllByCustomerId(getCustomer.getId()));
+		return GetAllAddressResponse.of(addressRepository.findAddressResponseByCustomerId(getCustomer.getId()));
 	}
 
 	@Transactional
 	public GetAllAddressResponse updateAddress(Long addressId, String newAddress, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
-
 		String strippedAddress = newAddress.strip();
+
 		Address getAddress = getAddressOrElseThrow(addressId);
 		if (getAddress.getAddress().equals(strippedAddress)) {
 			throw new BaseException(ADDRESS_SAME_AS_OLD);
 		}
 
 		getAddress.updateAddress(strippedAddress);
-		customerRepository.save(getCustomer);
 
-		return GetAllAddressResponse.of(addressRepository.findAllByCustomerId(getCustomer.getId()));
+		return GetAllAddressResponse.of(
+			addressRepository.findAddressResponseByCustomerId(currentUser.getUserInfo().getId()));
 	}
 
 	@Transactional(readOnly = true)
-	public GetAllAddressResponse getAllAddresses(CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
-		return GetAllAddressResponse.of(getCustomer.getAddresses());
+	public GetAllAddressResponse getAllAddressResponse(CustomUserDetails currentUser) {
+		return GetAllAddressResponse.of(
+			addressRepository.findAddressResponseByCustomerId(currentUser.getUserInfo().getId()));
 	}
 
 	@Transactional
 	public GetAllAddressResponse updateAddressStatus(Long addressId, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
-
 		Address getAddress = getAddressOrElseThrow(addressId);
 		if (getAddress.getStatus() == INACTIVE) {
 			// 다른 모든 주소를 비활성화
-			addressRepository.findAllByCustomerId(getCustomer.getId())
+			addressRepository.findAllByCustomerId(currentUser.getUserInfo().getId())
 				.forEach(address -> address.updateStatus(INACTIVE));
 
 			// 요청된 주소를 활성화로 변경
@@ -105,7 +99,7 @@ public class CustomerService {
 			throw new BaseException(ADDRESS_STATUS_IS_ALREADY_ACTIVE);
 		}
 
-		boolean noActiveStatus = addressRepository.findAllByCustomerId(getCustomer.getId())
+		boolean noActiveStatus = addressRepository.findAllByCustomerId(currentUser.getUserInfo().getId())
 			.stream()
 			.noneMatch(address -> address.getStatus() == ACTIVE);
 
@@ -114,26 +108,26 @@ public class CustomerService {
 			throw new BaseException(NO_ACTIVE_ADDRESS);
 		}
 
-		return GetAllAddressResponse.of(getCustomer.getAddresses());
+		return GetAllAddressResponse.of(
+			addressRepository.findAddressResponseByCustomerId(currentUser.getUserInfo().getId()));
 	}
 
 	@Transactional
 	public GetAllAddressResponse deleteAddress(Long addressId, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
 		Address getAddress = getAddressOrElseThrow(addressId);
 
 		if (getAddress.getStatus() == ACTIVE) {
 			throw new BaseException(DELETE_ADDRESS_FAILED);
 		}
 
-		getCustomer.removeAddress(getAddress);    // orphanRemoval에 의해 자동 삭제
+		addressRepository.delete(getAddress);
 
-		return GetAllAddressResponse.of(getCustomer.getAddresses());
+		return GetAllAddressResponse.of(
+			addressRepository.findAddressResponseByCustomerId(currentUser.getUserInfo().getId()));
 	}
 
 	@Transactional
-	public CustomerResponse updatePhoneNumber(String newPhoneNumber,
-		CustomUserDetails currentUser) {
+	public CustomerResponse updatePhoneNumber(String newPhoneNumber, CustomUserDetails currentUser) {
 		Customer getCustomer = getCustomerOrElseThrow(currentUser.getUsername());
 
 		if (customerRepository.existsByPhoneNumber(newPhoneNumber)) {

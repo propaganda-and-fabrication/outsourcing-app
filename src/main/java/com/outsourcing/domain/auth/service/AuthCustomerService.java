@@ -15,6 +15,7 @@ import com.outsourcing.domain.auth.entity.RefreshToken;
 import com.outsourcing.domain.auth.repository.RefreshTokenRepository;
 import com.outsourcing.domain.user.entity.Address;
 import com.outsourcing.domain.user.entity.Customer;
+import com.outsourcing.domain.user.repository.AddressRepository;
 import com.outsourcing.domain.user.repository.CustomerRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,10 @@ public class AuthCustomerService {
 	private final PasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtTokenProvider tokenProvider;
+	private final AddressRepository addressRepository;
 
 	@Transactional
-	public TokenResponse signUpCustomer(String email, String password, String name, String phoneNumber, String role,
+	public TokenResponse signUpCustomer(String email, String password, String name, String phoneNumber,
 		String address) {
 		// 이메일 중복 검사
 		if (customerRepository.existsByEmail(email)) {
@@ -42,11 +44,10 @@ public class AuthCustomerService {
 		}
 
 		String encodedPassword = passwordEncoder.encode(password);
-		Customer newCustomer = new Customer(email, encodedPassword, name, phoneNumber, from(role));
+		Customer newCustomer = customerRepository.save(
+			new Customer(email, encodedPassword, name, phoneNumber, CUSTOMER));
 
-		Address newAddress = Address.from(address, ACTIVE);
-		newCustomer.addAddress(newAddress);
-		customerRepository.save(newCustomer);
+		addressRepository.save(Address.from(address, ACTIVE, newCustomer));
 
 		String accessToken = tokenProvider.generateAccessToken(newCustomer.getId(), newCustomer.getEmail(),
 			newCustomer.getRole());

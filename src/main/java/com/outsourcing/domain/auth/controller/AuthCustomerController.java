@@ -26,7 +26,7 @@ public class AuthCustomerController {
 	@PostMapping("/v1/auth/customers")
 	public Response<TokenResponse> signUpCustomer(@Valid @RequestBody CustomerSignUpRequest request) {
 		TokenResponse tokenResponse = customerService.signUpCustomer(request.getEmail(), request.getPassword(),
-			request.getName(), request.getPhoneNumber(), request.getUserRole(), request.getAddress());
+			request.getName(), request.getPhoneNumber(), request.getAddress());
 		return Response.of(tokenResponse, "Customer 회원가입 성공");
 	}
 

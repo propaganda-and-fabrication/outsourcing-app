@@ -1,15 +1,14 @@
 package com.outsourcing.domain.auth.dto.request;
 
-import static com.outsourcing.domain.user.enums.UserRole.*;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class OwnerSignUpRequest {
 
 	@NotBlank
@@ -28,15 +27,4 @@ public class OwnerSignUpRequest {
 	@NotBlank
 	@Pattern(regexp = "^(010)[0-9]{3,4}[0-9]{4}$", message = "휴대전화 번호 형식이 아닙니다.")
 	private final String phoneNumber;
-
-	private final String userRole;
-
-	@Builder
-	public OwnerSignUpRequest(String email, String password, String name, String phoneNumber) {
-		this.email = email;
-		this.password = password;
-		this.name = name;
-		this.phoneNumber = phoneNumber;
-		this.userRole = OWNER.getAuthority();
-	}
 }
