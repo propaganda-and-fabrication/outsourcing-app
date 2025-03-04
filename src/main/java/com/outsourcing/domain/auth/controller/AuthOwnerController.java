@@ -27,18 +27,18 @@ public class AuthOwnerController {
 	public Response<TokenResponse> signUpOwner(@Valid @RequestBody OwnerSignUpRequest request) {
 		TokenResponse tokenResponse = ownerService.signUpOwner(request.getEmail(), request.getPassword(),
 			request.getName(), request.getPhoneNumber());
-		return Response.of(tokenResponse, "Owner 회원가입 성공");
+		return Response.of(tokenResponse);
 	}
 
 	@PostMapping("/v1/auth/owners/sign-in")
 	public Response<TokenResponse> signInOwner(@Valid @RequestBody SignInRequest request) {
 		TokenResponse tokenResponse = ownerService.signInOwner(request.getEmail(), request.getPassword());
-		return Response.of(tokenResponse, "Owner 로그인 성공");
+		return Response.of(tokenResponse);
 	}
 
 	@PostMapping("/v1/auth/owners/reissue")
 	public Response<TokenResponse> ownerTokenReissue(@Valid @RequestBody TokenReissueRequest request) {
 		TokenResponse tokenResponse = ownerService.ownerTokenReissue(request.getRefreshToken());
-		return Response.of(tokenResponse, "Owner 토큰 재발급 성공");
+		return Response.of(tokenResponse);
 	}
 }
