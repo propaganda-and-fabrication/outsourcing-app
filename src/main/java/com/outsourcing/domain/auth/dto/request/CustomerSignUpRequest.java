@@ -5,8 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class CustomerSignUpRequest {
 
 	@NotBlank
@@ -30,11 +32,4 @@ public class CustomerSignUpRequest {
 	@Pattern(regexp = "^[가-힣0-9 -]+$", message = "주소 형식이 올바르지 않습니다.")
 	private final String address;
 
-	public CustomerSignUpRequest(String phoneNumber, String name, String password, String email, String address) {
-		this.phoneNumber = phoneNumber;
-		this.name = name;
-		this.password = password;
-		this.email = email;
-		this.address = address;
-	}
 }
