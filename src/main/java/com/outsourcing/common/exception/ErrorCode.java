@@ -42,6 +42,9 @@ public enum ErrorCode {
 	DELETE_ADDRESS_FAILED(BAD_REQUEST, "선택되어 있는 주소는 삭제할 수 없습니다."),
 	ADDRESS_ACCESS_DENIED(FORBIDDEN, "해당 주소에 대한 권한이 없습니다."),
 
+	// 가게 관련 예외
+	MAX_STORE_LIMIT_REACHED(BAD_REQUEST, "운영하는 가게 수가 3개를 초과하였습니다."),
+
 	// 주문 관련 예외
 
 	// 이후 내용을 추가
