@@ -13,8 +13,8 @@ public interface Response<T> {
 
 	T getError();
 
-	static <T> Response<T> of(T data, String message) {
-		return new SuccessResponse<>(data, message);
+	static <T> Response<T> of(T data) {
+		return new SuccessResponse<>(data);
 	}
 
 	static <T> ErrorResponse<List<T>> error(List<T> errors) {

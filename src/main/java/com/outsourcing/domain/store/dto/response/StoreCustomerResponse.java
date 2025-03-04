@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 
+
 @Getter
 @RequiredArgsConstructor
 public class StoreCustomerResponse {

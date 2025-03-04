@@ -2,10 +2,10 @@ package com.outsourcing.domain.store.dto.response;
 
 import com.outsourcing.domain.store.entity.Store;
 import com.outsourcing.domain.store.enums.StoreStatus;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.awt.*;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
@@ -37,5 +37,4 @@ public class StoreOwnerResponse {
                 store.getMinPrice()
         );
     }
-
 }

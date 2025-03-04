@@ -3,9 +3,16 @@ package com.outsourcing.domain.store.entity;
 import com.outsourcing.common.entity.BaseTime;
 import com.outsourcing.domain.store.enums.StoreStatus;
 import com.outsourcing.domain.user.entity.Owner;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,13 +29,13 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "stores")
 public class Store extends BaseTime {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private Owner owner;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "owner_id", nullable = false)
+	private Owner owner;
 
     @Column(nullable = false, unique = true)
     private String storeName;
@@ -51,8 +58,8 @@ public class Store extends BaseTime {
     @Column(nullable = false)
     private StoreStatus storeStatus;
 
-    @Column(nullable = false)
-    private BigDecimal minPrice;
+	@Column(nullable = false)
+	private BigDecimal minPrice;
 
     public Store(String storeName, String storeProfileUrl, BigDecimal minPrice) {
         this.storeName = storeName;

@@ -50,6 +50,11 @@ public enum ErrorCode {
 
 	// 주문 관련 예외
 
+	// 메뉴 관련 예외
+	INVALID_STORE_ACCESS(FORBIDDEN, "해당 가게에 대한 접근 권한이 없습니다."),
+	MENU_NOT_FOUND(NOT_FOUND, "해당 메뉴를 찾을 수 없습니다."),
+	MENU_DELETED(NOT_FOUND, "해당 메뉴는 이미 삭제되었습니다."),
+
 	// 이후 내용을 추가
 
 	TYPE_MISMATCH(BAD_REQUEST, "잘못된 타입입니다."),

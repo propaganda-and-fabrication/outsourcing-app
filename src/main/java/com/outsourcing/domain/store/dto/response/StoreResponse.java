@@ -1,5 +1,6 @@
 package com.outsourcing.domain.store.dto.response;
 
+import com.outsourcing.domain.menu.entity.Menu;
 import com.outsourcing.domain.store.entity.Store;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

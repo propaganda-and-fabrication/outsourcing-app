@@ -2,6 +2,8 @@ package com.outsourcing.domain.store.service;
 
 import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.common.exception.ErrorCode;
+import com.outsourcing.domain.menu.entity.Menu;
+import com.outsourcing.domain.menu.repository.MenuRepository;
 import com.outsourcing.domain.store.dto.request.*;
 import com.outsourcing.domain.store.dto.response.StoreCustomerResponse;
 import com.outsourcing.domain.store.dto.response.StoreOwnerResponse;
@@ -27,15 +29,15 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
     private final OwnerRepository ownerRepository;
-//    private final MenuRepository menuRepository;
+    private final MenuRepository menuRepository;
 
-    // 사장님 이메일로 등록된 Owner 확인
+    // 공통 로직 : 사장님 이메일로 등록된 Owner 확인
     private Owner getOwnerByEmail(String ownerEmail) {
         return ownerRepository.findByEmail(ownerEmail)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
     }
 
-    // 가게 존재 확인
+    // 공통 로직 : 가게 존재 확인
     private Store getStoreById(Long storeId) {
         return storeRepository.findById(storeId)
                 .orElseThrow(() -> new BaseException(ErrorCode.STORE_NOT_FOUND));
@@ -46,7 +48,6 @@ public class StoreService {
             String ownerEmail,
             CreateStoreRequest request
     ) {
-        //사장님인지 등록된 이메일로 체크
         Owner owner = getOwnerByEmail(ownerEmail);
 
         if (storeRepository.countStoreByOwner(owner) >= 3) {
@@ -65,13 +66,13 @@ public class StoreService {
         );
         store.setOwner(owner);
 
-        Store savedStore = storeRepository.save(store);
-        return StoreOwnerResponse.of(savedStore);
+        Store saved = storeRepository.save(store);
+        return StoreOwnerResponse.of(saved);
     }
 
     //Customer 입장에서의 가게 전체 조회(운영중인 가게만 조회 가능)
     @Transactional(readOnly = true)
-    public List<StoreCustomerResponse> findAll() {
+    public List<StoreCustomerResponse> findAllStoresForCustomer() {
 
         List<Store> stores = storeRepository.findByStoreStatus(StoreStatus.OPERATIONAL);
 
@@ -93,7 +94,7 @@ public class StoreService {
 
     // Owner 입장에서의 가게 전체 조회(모든 status 조회 가능)
     @Transactional(readOnly = true)
-    public List<StoreOwnerResponse> findAll(StoreStatus storeStatus) {
+    public List<StoreOwnerResponse> findAllStoresForOwner(StoreStatus storeStatus) {
 
         List<Store> stores = storeRepository.findByStoreStatus(storeStatus);
 
@@ -114,13 +115,13 @@ public class StoreService {
         return dtoList;
     }
 
-//    @Transactional(readOnly = true)
-//    public StoreResponse findById(Long storeId) {
-//        Store store = getStoreById(storeId);
-//
-//        List<Menu> menus = menuRepository.findByStoreId(storeId);
-//        return StoreResponse.of(store,menus);
-//    }
+    @Transactional(readOnly = true)
+    public StoreResponse findById(Long storeId) {
+        Store store = getStoreById(storeId);
+
+        List<Menu> menus = menuRepository.findByStoreId(storeId);
+        return StoreResponse.of(store,menus);
+    }
 
     @Transactional
     public StoreOwnerResponse updateStoreName(

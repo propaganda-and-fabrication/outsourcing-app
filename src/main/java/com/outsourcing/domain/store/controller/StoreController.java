@@ -1,5 +1,7 @@
 package com.outsourcing.domain.store.controller;
 
+import com.outsourcing.common.exception.BaseException;
+import com.outsourcing.common.exception.ErrorCode;
 import com.outsourcing.common.response.Response;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
 import com.outsourcing.domain.store.dto.request.*;
@@ -25,6 +27,9 @@ public class StoreController {
 
     // 공통 구현 메서드
     private String getOwnerEmail(@AuthenticationPrincipal CustomUserDetails currentOwner) {
+        if (currentOwner == null || currentOwner.getUserInfo() == null) {
+            throw new BaseException(ErrorCode.USER_NOT_FOUND);  // 적절한 예외 처리
+        }
         return currentOwner.getUserInfo().getEmail();
     }
 
@@ -36,25 +41,25 @@ public class StoreController {
     ) {
         String ownerEmail = getOwnerEmail(currentOwner);
         StoreOwnerResponse response = storeService.createStore(ownerEmail,request);
-        return Response.of(response, "가게 등록 성공");
+        return Response.of(response);
     }
 
     // Customer 입장에서의 가게 전체 조회
     @GetMapping("/v1/customers/stores")
-    public Response<List<StoreCustomerResponse>> getAll() {
-        return Response.of(storeService.findAll(), "가게 전체 조회 성공");
+    public Response<List<StoreCustomerResponse>> getAllStoresForCustomer() {
+        return Response.of(storeService.findAllStoresForCustomer());
     }
 
     // Owner 입장에서의 가게 전체 조회
-    @GetMapping("/v1/customers/stores")
-    public Response<List<StoreOwnerResponse>> getAll(StoreStatus storeStatus) {
-        return Response.of(storeService.findAll(storeStatus), "가게 전체 조회 성공");
+    @GetMapping("/v1/owners/stores")
+    public Response<List<StoreOwnerResponse>> getAllStoresForOwner(StoreStatus storeStatus) {
+        return Response.of(storeService.findAllStoresForOwner(storeStatus));
     }
 
-//    @GetMapping("/v1/owners/stores/{storeId}")
-//    public Response<StoreResponse> getOne(@PathVariable Long storeId) {
-//        return Response.of(storeService.findById(storeId), "가게 단건 조회 성공");
-//    }
+    @GetMapping("/v1/owners/stores/{storeId}")
+    public Response<StoreResponse> getOne(@PathVariable Long storeId) {
+        return Response.of(storeService.findById(storeId));
+    }
 
     // 가게 이름 수정
     @PatchMapping("/v1/owners/stores/{storeId}/update/name")
@@ -65,7 +70,7 @@ public class StoreController {
             ) {
         String ownerEmail = getOwnerEmail(currentOwner);
         StoreOwnerResponse response = storeService.updateStoreName(storeId,request,ownerEmail);
-        return Response.of(response, "가게 이름 수정 성공");
+        return Response.of(response);
     }
 
     // 가게 이미지 수정
@@ -77,7 +82,7 @@ public class StoreController {
     ) {
         String ownerEmail = getOwnerEmail(currentOwner);
         StoreOwnerResponse response = storeService.updateProfileUrl(storeId,request,ownerEmail);
-        return Response.of(response, "가게 이미지 수정 성공");
+        return Response.of(response);
     }
 
     //가게 주소 수정
@@ -89,7 +94,7 @@ public class StoreController {
     ) {
         String ownerEmail = getOwnerEmail(currentOwner);
         StoreOwnerResponse response = storeService.updateStoreAddress(storeId,request,ownerEmail);
-        return Response.of(response, "가게 주소 수정 성공");
+        return Response.of(response);
     }
 
     // 가게 전화번호 수정
@@ -101,7 +106,7 @@ public class StoreController {
     ) {
         String ownerEmail = getOwnerEmail(currentOwner);
         StoreOwnerResponse response = storeService.updateStorePhoneNumber(storeId,request,ownerEmail);
-        return Response.of(response, "가게 전화번호 수정 성공");
+        return Response.of(response);
     }
 
     // 가게 영업시간 수정
@@ -113,7 +118,7 @@ public class StoreController {
     ) {
         String ownerEmail = getOwnerEmail(currentOwner);
         StoreOwnerResponse response = storeService.updateStoreHours(storeId,request,ownerEmail);
-        return Response.of(response, "가게 운영시간 수정 성공");
+        return Response.of(response);
     }
 
     // 가게 상태 수정
@@ -125,7 +130,7 @@ public class StoreController {
     ) {
         String ownerEmail = getOwnerEmail(currentOwner);
         StoreOwnerResponse response = storeService.updateStoreStatus(storeId,request,ownerEmail);
-        return Response.of(response, "가게 운영상태 수정 성공");
+        return Response.of(response);
     }
 
     // 가게 최소금액 수정
@@ -137,6 +142,6 @@ public class StoreController {
     ) {
         String ownerEmail = getOwnerEmail(currentOwner);
         StoreOwnerResponse response = storeService.updateMinPrice(storeId,request,ownerEmail);
-        return Response.of(response, "가게 최소금액 수정 성공");
+        return Response.of(response);
     }
 }
