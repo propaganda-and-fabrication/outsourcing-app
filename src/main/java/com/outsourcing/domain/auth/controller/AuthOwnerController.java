@@ -26,7 +26,7 @@ public class AuthOwnerController {
 	@PostMapping("/v1/auth/owners")
 	public Response<TokenResponse> signUpOwner(@Valid @RequestBody OwnerSignUpRequest request) {
 		TokenResponse tokenResponse = ownerService.signUpOwner(request.getEmail(), request.getPassword(),
-			request.getName(), request.getPhoneNumber(), request.getUserRole());
+			request.getName(), request.getPhoneNumber());
 		return Response.of(tokenResponse, "Owner 회원가입 성공");
 	}
 
