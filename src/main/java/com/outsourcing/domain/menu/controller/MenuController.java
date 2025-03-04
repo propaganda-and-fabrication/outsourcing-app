@@ -39,7 +39,7 @@ public class MenuController {
 		@Valid @RequestBody CreateMenuRequest request) {
 
 		OwnerMenuResponse response = menuService.createMenu(request, getOwnerEmail(currentUser));
-		return Response.of(response, "메뉴 등록 성공");
+		return Response.of(response);
 	}
 
 	// 메뉴 수정 (이름, 가격, 내용)
@@ -50,7 +50,7 @@ public class MenuController {
 		@Valid @RequestBody UpdateMenuRequest request) {
 
 		OwnerMenuResponse response = menuService.updateMenuDetails(menuId, request, getOwnerEmail(currentUser));
-		return Response.of(response, "메뉴 정보 수정 성공");
+		return Response.of(response);
 	}
 
 	// 메뉴 수정 (상태)
@@ -61,7 +61,7 @@ public class MenuController {
 		@RequestParam MenuStatus status) {
 
 		OwnerMenuResponse response = menuService.updateMenuStatus(menuId, status, getOwnerEmail(currentUser));
-		return Response.of(response, "메뉴 상태 변경 성공");
+		return Response.of(response);
 	}
 
 	// 메뉴 수정 (이미지)
@@ -72,7 +72,7 @@ public class MenuController {
 		@RequestParam String imageUrl) {
 
 		OwnerMenuResponse response = menuService.updateImageUrl(menuId, imageUrl, getOwnerEmail(currentUser));
-		return Response.of(response, "메뉴 이미지 변경 성공");
+		return Response.of(response);
 	}
 
 	// 메뉴 삭제 (soft delete)
@@ -81,8 +81,8 @@ public class MenuController {
 		@PathVariable Long menuId,
 		@AuthenticationPrincipal CustomUserDetails currentUser
 	) {
-		
+
 		menuService.deleteMenu(menuId, getOwnerEmail(currentUser));
-		return Response.of(null, "메뉴 삭제 성공");
+		return Response.of(null);
 	}
 }
