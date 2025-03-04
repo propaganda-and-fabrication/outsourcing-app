@@ -12,6 +12,7 @@ public class OwnerMenuResponse {
 
 	private final Long id;
 	private final Long storeId;
+	private final String storeName;
 	private final String name;
 	private final int price;
 	private final String description;
@@ -25,6 +26,7 @@ public class OwnerMenuResponse {
 		return new OwnerMenuResponse(
 			menu.getId(),
 			menu.getStore().getId(),
+			menu.getStore().getStoreName(),
 			menu.getName(),
 			menu.getPrice(),
 			menu.getDescription(),
