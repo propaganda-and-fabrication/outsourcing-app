@@ -87,8 +87,7 @@ public class Store extends BaseTime {
         this.storeStatus = storeStatus;
     }
 
-    public void setOwner(Owner owner) {
-    }
+    public void setOwner(Owner owner) {this.owner = owner;}
 
     public void updateStoreName(String storeName) {this.storeName = storeName;}
 
@@ -103,4 +102,6 @@ public class Store extends BaseTime {
     public void updateStoreStatus(StoreStatus storeStatus) {this.storeStatus = storeStatus;}
 
     public void updateMinPrice(BigDecimal minPrice) {this.minPrice = minPrice;}
+
+    public void setStoreStatus(StoreStatus storeStatus) {this.storeStatus = storeStatus;}
 }

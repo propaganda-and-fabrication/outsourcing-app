@@ -144,4 +144,9 @@ public class StoreController {
         StoreOwnerResponse response = storeService.updateMinPrice(storeId,request,ownerEmail);
         return Response.of(response);
     }
+    //가게 삭제(실질적인 삭제가 아닌 영업 상태만 변경)
+    @PatchMapping("/v1/owners/stores/{storeId}")
+    public void deleteStore(@PathVariable Long storeId) {
+        storeService.deleteById(storeId);
+    }
 }

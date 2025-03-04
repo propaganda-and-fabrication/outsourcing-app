@@ -231,4 +231,15 @@ public class StoreService {
         store.updateMinPrice(request.getMinPrice());
         return StoreOwnerResponse.of(store);
     }
+
+    @Transactional
+    public void deleteById(Long storeId) {
+        Store store = storeRepository.findById(storeId).orElseThrow(
+                () -> new BaseException(ErrorCode.STORE_NOT_FOUND)
+        );
+
+        store.setStoreStatus(StoreStatus.SHUTDOWN);
+        storeRepository.save(store);
+        // 사장님의 등록된 가게의 카운트를 -1 해줘야함.
+    }
 }
