@@ -44,6 +44,7 @@ public enum ErrorCode {
 
 	// 가게 관련 예외
 	MAX_STORE_LIMIT_REACHED(BAD_REQUEST, "운영하는 가게 수가 3개를 초과하였습니다."),
+	STORE_NOT_FOUND(NOT_FOUND,"가게를 찾을 수 없습니다."),
 
 	// 주문 관련 예외
 
