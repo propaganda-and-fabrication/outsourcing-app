@@ -2,7 +2,7 @@ package com.outsourcing.domain.order.entity;
 
 import com.outsourcing.common.entity.BaseTime;
 import com.outsourcing.domain.order.enums.OrderStatus;
-import com.outsourcing.domain.store.entitiy.Store;
+import com.outsourcing.domain.store.entity.Store;
 import com.outsourcing.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
