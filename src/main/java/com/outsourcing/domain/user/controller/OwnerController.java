@@ -30,7 +30,7 @@ public class OwnerController {
 	@GetMapping("/v1/owners/me")
 	public Response<OwnerResponse> getOwnerProfile(@AuthenticationPrincipal CustomUserDetails currentUser) {
 		OwnerResponse response = ownerService.getOwnerProfile(currentUser);
-		return Response.of(response, "Owner 프로필 조회 성공");
+		return Response.of(response);
 	}
 
 	@PatchMapping("/v1/owners/me/phone-number")
@@ -38,7 +38,7 @@ public class OwnerController {
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
 		OwnerResponse response = ownerService.updatePhoneNumber(request.getNewPhoneNumber(), currentUser);
-		return Response.of(response, "Owner 휴대폰 번호 수정 성공");
+		return Response.of(response);
 	}
 
 	@PatchMapping("/v1/owners/me/password")
@@ -47,7 +47,7 @@ public class OwnerController {
 
 		OwnerResponse response = ownerService.updatePassword(request.getOldPassword(),
 			request.getNewPassword(), currentUser);
-		return Response.of(response, "Owner 비밀번호 수정 성공");
+		return Response.of(response);
 	}
 
 	@PostMapping("/v1/owners/me/delete")
@@ -56,6 +56,6 @@ public class OwnerController {
 
 		String accessToken = httpServletRequest.getHeader("Authorization");
 		ownerService.deleteOwner(request.getPassword(), accessToken, currentUser);
-		return Response.of(null, "Owner 탈퇴 성공");
+		return Response.of(null);
 	}
 }
