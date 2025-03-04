@@ -239,7 +239,12 @@ public class StoreService {
         );
 
         store.setStoreStatus(StoreStatus.SHUTDOWN);
-        storeRepository.save(store);
+
         // 사장님의 등록된 가게의 카운트를 -1 해줘야함.
+//        Owner owner = store.getOwner();
+//        owner.setStoreCount(owner.getStoreCount()-1);
+//        ownerRepository.save(owner);
+
+        storeRepository.save(store);
     }
 }
