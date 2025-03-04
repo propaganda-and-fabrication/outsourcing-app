@@ -65,9 +65,12 @@ public class CustomerService {
 
 	@Transactional
 	public GetAllAddressResponse updateAddress(Long addressId, String newAddress, CustomUserDetails currentUser) {
-		String strippedAddress = newAddress.strip();
-
 		Address getAddress = getAddressOrElseThrow(addressId);
+
+		// 주소에 등록된 CustomerId와 로그인한 사용자의 id 값이 다를 경우 예외 발생
+		validateAddressOwnership(getAddress.getCustomer().getId(), currentUser.getUserInfo().getId());
+
+		String strippedAddress = newAddress.strip();
 		if (getAddress.getAddress().equals(strippedAddress)) {
 			throw new BaseException(ADDRESS_SAME_AS_OLD);
 		}
@@ -87,6 +90,10 @@ public class CustomerService {
 	@Transactional
 	public GetAllAddressResponse updateAddressStatus(Long addressId, CustomUserDetails currentUser) {
 		Address getAddress = getAddressOrElseThrow(addressId);
+
+		// 주소에 등록된 CustomerId와 로그인한 사용자의 id 값이 다를 경우 예외 발생
+		validateAddressOwnership(getAddress.getCustomer().getId(), currentUser.getUserInfo().getId());
+
 		if (getAddress.getStatus() == INACTIVE) {
 			// 다른 모든 주소를 비활성화
 			addressRepository.findAllByCustomerId(currentUser.getUserInfo().getId())
@@ -115,6 +122,9 @@ public class CustomerService {
 	@Transactional
 	public GetAllAddressResponse deleteAddress(Long addressId, CustomUserDetails currentUser) {
 		Address getAddress = getAddressOrElseThrow(addressId);
+
+		// 주소에 등록된 CustomerId와 로그인한 사용자의 id 값이 다를 경우 예외 발생
+		validateAddressOwnership(getAddress.getCustomer().getId(), currentUser.getUserInfo().getId());
 
 		if (getAddress.getStatus() == ACTIVE) {
 			throw new BaseException(DELETE_ADDRESS_FAILED);
@@ -203,5 +213,11 @@ public class CustomerService {
 	private Address getAddressOrElseThrow(Long addressId) {
 		return addressRepository.findById(addressId)
 			.orElseThrow(() -> new BaseException(ADDRESS_NOT_FOUND));
+	}
+
+	private void validateAddressOwnership(Long customerId, Long currentUserId) {
+		if (!customerId.equals(currentUserId)) {
+			throw new BaseException(ADDRESS_ACCESS_DENIED);
+		}
 	}
 }
