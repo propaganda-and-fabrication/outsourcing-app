@@ -28,14 +28,17 @@ public class MenuController {
 
 	private final MenuService menuService;
 
+	private String getOwnerEmail(CustomUserDetails currentUser) {
+		return currentUser.getUsername();
+	}
+
 	// 메뉴 생성
 	@PostMapping("v1/owners/menus")
 	public Response<OwnerMenuResponse> createMenu(
 		@AuthenticationPrincipal CustomUserDetails currentUser,
 		@Valid @RequestBody CreateMenuRequest request) {
 
-		String ownerEmail = currentUser.getUsername();
-		OwnerMenuResponse response = menuService.createMenu(request, ownerEmail);
+		OwnerMenuResponse response = menuService.createMenu(request, getOwnerEmail(currentUser));
 		return Response.of(response, "메뉴 등록 성공");
 	}
 
@@ -46,8 +49,7 @@ public class MenuController {
 		@AuthenticationPrincipal CustomUserDetails currentUser,
 		@Valid @RequestBody UpdateMenuRequest request) {
 
-		String ownerEmail = currentUser.getUsername();
-		OwnerMenuResponse response = menuService.updateMenuDetails(menuId, request, ownerEmail);
+		OwnerMenuResponse response = menuService.updateMenuDetails(menuId, request, getOwnerEmail(currentUser));
 		return Response.of(response, "메뉴 정보 수정 성공");
 	}
 
@@ -58,8 +60,7 @@ public class MenuController {
 		@AuthenticationPrincipal CustomUserDetails currentUser,
 		@RequestParam MenuStatus status) {
 
-		String ownerEmail = currentUser.getUsername();
-		OwnerMenuResponse response = menuService.updateMenuStatus(menuId, status, ownerEmail);
+		OwnerMenuResponse response = menuService.updateMenuStatus(menuId, status, getOwnerEmail(currentUser));
 		return Response.of(response, "메뉴 상태 변경 성공");
 	}
 
@@ -70,8 +71,7 @@ public class MenuController {
 		@AuthenticationPrincipal CustomUserDetails currentUser,
 		@RequestParam String imageUrl) {
 
-		String ownerEmail = currentUser.getUsername();
-		OwnerMenuResponse response = menuService.updateImageUrl(menuId, imageUrl, ownerEmail);
+		OwnerMenuResponse response = menuService.updateImageUrl(menuId, imageUrl, getOwnerEmail(currentUser));
 		return Response.of(response, "메뉴 이미지 변경 성공");
 	}
 
@@ -81,9 +81,8 @@ public class MenuController {
 		@PathVariable Long menuId,
 		@AuthenticationPrincipal CustomUserDetails currentUser
 	) {
-
-		String ownerEmail = currentUser.getUsername();
-		menuService.deleteMenu(menuId, ownerEmail);
+		
+		menuService.deleteMenu(menuId, getOwnerEmail(currentUser));
 		return Response.of(null, "메뉴 삭제 성공");
 	}
 }
