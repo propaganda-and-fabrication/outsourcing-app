@@ -45,7 +45,9 @@ public enum ErrorCode {
 
 	// 메뉴 관련 예외
 	STORE_NOT_FOUND(NOT_FOUND, "가게를 찾을 수 없습니다."),
-	INVALID_STORE_ACCESS(HttpStatus.FORBIDDEN, "해당 가게에 대한 접근 권한이 없습니다."),
+	INVALID_STORE_ACCESS(FORBIDDEN, "해당 가게에 대한 접근 권한이 없습니다."),
+	MENU_NOT_FOUND(NOT_FOUND, "해당 메뉴를 찾을 수 없습니다."),
+	MENU_DELETED(NOT_FOUND, "해당 메뉴는 이미 삭제되었습니다."),
 
 	// 이후 내용을 추가
 

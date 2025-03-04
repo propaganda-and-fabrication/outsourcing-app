@@ -1,12 +1,14 @@
 package com.outsourcing.domain.menu.entity;
 
+import static lombok.AccessLevel.*;
+
 import java.time.LocalDateTime;
 
 import com.outsourcing.common.entity.BaseTime;
-import com.outsourcing.domain.menu.dto.request.MenuRequest;
 import com.outsourcing.domain.menu.enums.MenuStatus;
 import com.outsourcing.domain.store.entity.Store;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,12 +18,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
+@Table(name = "menus")
 public class Menu extends BaseTime {
 
 	@Id
@@ -32,8 +36,10 @@ public class Menu extends BaseTime {
 	@JoinColumn(name = "store_id", nullable = false)
 	private Store store;
 
+	@Column(nullable = false)
 	private String name;
 
+	@Column(nullable = false)
 	private int price;
 
 	private String description;
@@ -54,24 +60,22 @@ public class Menu extends BaseTime {
 		this.status = status;
 	}
 
-	public static Menu of(Store store, MenuRequest request) {
-		return new Menu(
-			store,
-			request.getName(),
-			request.getPrice(),
-			request.getDescription(),
-			request.getImageUrl(),
-			request.getStatus()
-		);
+	public static Menu of(Store store, String name, int price, String description, String imageUrl, MenuStatus status) {
+		return new Menu(store, name, price, description, imageUrl, status);
 	}
 
-	public static Menu update(Menu menu, String name, int price, String description, String imageUrl,
-		MenuStatus status) {
-		menu.price = price;
-		menu.description = description;
-		menu.imageUrl = imageUrl;
-		menu.status = status;
-		return menu;
+	public void updateMenuDetails(String name, Integer price, String description) {
+		this.name = name != null ? name : this.name;
+		this.price = price != null ? price : this.price;
+		this.description = description != null ? description : this.description;
+	}
+
+	public void updateStatus(MenuStatus status) {
+		this.status = status;
+	}
+
+	public void updateImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	public void deleteMenu() {

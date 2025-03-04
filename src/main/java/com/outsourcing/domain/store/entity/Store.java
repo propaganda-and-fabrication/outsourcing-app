@@ -9,12 +9,16 @@ import java.time.LocalTime;
 
 import com.outsourcing.common.entity.BaseTime;
 import com.outsourcing.domain.store.enums.StoreStatus;
+import com.outsourcing.domain.user.entity.Owner;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +32,10 @@ public class Store extends BaseTime {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "owner_id", nullable = false)
+	private Owner owner; // 임시코드, PR 시 삭제
 
 	@Column(nullable = false, unique = true)
 	private String storeName;
