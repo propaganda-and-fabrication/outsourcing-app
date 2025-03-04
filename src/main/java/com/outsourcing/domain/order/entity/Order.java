@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "ORDER")
+@Table(name = "orders")
 public class Order extends BaseTime {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
