@@ -40,6 +40,7 @@ public enum ErrorCode {
 	NO_ACTIVE_ADDRESS(BAD_REQUEST, "최소 한 군데는 주소로 선택해야 합니다."),
 	ADDRESS_SAME_AS_OLD(BAD_REQUEST, "이전 주소와 동일할 수 없습니다."),
 	DELETE_ADDRESS_FAILED(BAD_REQUEST, "선택되어 있는 주소는 삭제할 수 없습니다."),
+	ADDRESS_ACCESS_DENIED(FORBIDDEN, "해당 주소에 대한 권한이 없습니다."),
 
 	// 주문 관련 예외
 

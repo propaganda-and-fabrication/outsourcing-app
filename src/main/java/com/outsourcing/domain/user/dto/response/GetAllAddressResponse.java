@@ -2,34 +2,20 @@ package com.outsourcing.domain.user.dto.response;
 
 import java.util.List;
 
-import com.outsourcing.domain.user.entity.Address;
-import com.outsourcing.domain.user.enums.AddressStatus;
+import com.outsourcing.domain.user.dto.AddressDto;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public class GetAllAddressResponse {
 
-	private final List<AddressResponse> addresses;
+	private List<AddressDto> addressResponses;
 
-	public static GetAllAddressResponse of(List<Address> addresses) {
-		return new GetAllAddressResponse(
-			addresses.stream()
-				.map(AddressResponse::from)
-				.toList()
-		);
+	public GetAllAddressResponse(List<AddressDto> addressResponses) {
+		this.addressResponses = addressResponses;
 	}
 
-	@Getter
-	@RequiredArgsConstructor
-	public static class AddressResponse {
-		private final String address;
-		private final AddressStatus status;
-
-		private static AddressResponse from(Address address) {
-			return new AddressResponse(address.getAddress(), address.getStatus());
-		}
+	public static GetAllAddressResponse of(List<AddressDto> addressResponses) {
+		return new GetAllAddressResponse(addressResponses);
 	}
 }

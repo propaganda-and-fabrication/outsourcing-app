@@ -35,7 +35,7 @@ public class CustomerController {
 	private final CustomerService customerService;
 
 	@GetMapping("/v1/customers/me")
-	public Response<CustomerResponse> getUserProfile(@AuthenticationPrincipal CustomUserDetails currentUser) {
+	public Response<CustomerResponse> getCustomerProfile(@AuthenticationPrincipal CustomUserDetails currentUser) {
 		CustomerResponse response = customerService.getCustomerProfile(currentUser);
 		return Response.of(response, "Customer 프로필 조회 성공");
 	}
@@ -75,7 +75,7 @@ public class CustomerController {
 
 	@GetMapping("/v1/customers/me/addresses")
 	public Response<GetAllAddressResponse> getAllAddresses(@AuthenticationPrincipal CustomUserDetails currentUser) {
-		GetAllAddressResponse response = customerService.getAllAddresses(currentUser);
+		GetAllAddressResponse response = customerService.getAllAddressResponse(currentUser);
 		return Response.of(response, "Customer 주소 전체 조회 성공");
 	}
 
@@ -97,7 +97,7 @@ public class CustomerController {
 	}
 
 	@PatchMapping("/v1/customers/me/password")
-	public Response<CustomerResponse> updatePhoneNumber(@Valid @RequestBody UpdatePasswordRequest request,
+	public Response<CustomerResponse> updatePassword(@Valid @RequestBody UpdatePasswordRequest request,
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
 		CustomerResponse response = customerService.updatePassword(request.getOldPassword(),
@@ -107,10 +107,10 @@ public class CustomerController {
 
 	//TODO: 파일 시스템 완료 후 테스트 예정
 	@PatchMapping("/v1/customers/me/profile-image")
-	public Response<CustomerResponse> updateProfileUrl(@Valid @RequestBody UpdateProfileUrlRequest request,
+	public Response<CustomerResponse> updateCustomerProfileUrl(@Valid @RequestBody UpdateProfileUrlRequest request,
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
-		CustomerResponse response = customerService.updateProfileUrl(request.getNewProfileUrl(), currentUser);
+		CustomerResponse response = customerService.updateCustomerProfileUrl(request.getNewProfileUrl(), currentUser);
 		return Response.of(response, "Customer 프로필 이미지 수정 성공");
 	}
 

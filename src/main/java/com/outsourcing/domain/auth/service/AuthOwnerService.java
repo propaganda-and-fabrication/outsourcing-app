@@ -27,7 +27,7 @@ public class AuthOwnerService {
 	private final JwtTokenProvider tokenProvider;
 
 	@Transactional
-	public TokenResponse signUpOwner(String email, String password, String name, String phoneNumber, String role) {
+	public TokenResponse signUpOwner(String email, String password, String name, String phoneNumber) {
 		// 이메일 중복 검사
 		if (ownerRepository.existsByEmail(email)) {
 			throw new BaseException(EMAIL_DUPLICATED);
@@ -40,7 +40,7 @@ public class AuthOwnerService {
 
 		String encodedPassword = passwordEncoder.encode(password);
 		Owner newOwner = ownerRepository.save(
-			new Owner(email, encodedPassword, name, phoneNumber, from(role)));
+			new Owner(email, encodedPassword, name, phoneNumber, OWNER));
 
 		String accessToken = tokenProvider.generateAccessToken(newOwner.getId(), newOwner.getEmail(),
 			newOwner.getRole());
