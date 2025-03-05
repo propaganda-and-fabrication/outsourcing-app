@@ -13,12 +13,10 @@ import com.outsourcing.domain.user.entity.Customer;
 import com.outsourcing.domain.user.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,11 +35,14 @@ public class StoreCustomerController {
         return currentOwner.getUserInfo().getId();
     }
 
-    // Customer 입장에서의 가게 전체 조회
-    @GetMapping("/v1/customers/{customerId}/stores")
-    public Response<List<StoreCustomerResponse>> getAll(@AuthenticationPrincipal CustomUserDetails currenCustomer) {
-        Long customerId = getCustomerId(currenCustomer);
-        return Response.of(storeCustomerService.getStores(customerId));
+    // Customer 입장에서의 가게 전체 조회(페이지네이션)
+    @GetMapping("v1/customers/stores")
+    public Response<Page<StoreCustomerResponse>> getAllPage(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<StoreCustomerResponse> result = storeCustomerService.getAllPage(page,size);
+        return Response.of(result);
     }
 
     // Customer 입장에서의 가게 단건 조회
@@ -50,6 +51,6 @@ public class StoreCustomerController {
             @AuthenticationPrincipal CustomUserDetails currentCustomer,
             @PathVariable Long storeId) {
         Long customerId = getCustomerId(currentCustomer);
-        return Response.of(storeCustomerService.findById(storeId));
+        return Response.of(storeCustomerService.getStore(storeId));
     }
 }

@@ -12,6 +12,8 @@ import com.outsourcing.domain.store.repository.StoreRepository;
 import com.outsourcing.domain.user.entity.Customer;
 import com.outsourcing.domain.user.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,32 +38,29 @@ public class StoreCustomerService {
                 .orElseThrow(() -> new BaseException(ErrorCode.STORE_NOT_FOUND));
     }
 
-    //Customer 입장에서의 가게 전체 조회(운영중인 가게만 조회 가능)
+    // Customer의 화면에서 운영중인 가게 전체 조회(페이지네이션 적용)
     @Transactional(readOnly = true)
-    public List<StoreCustomerResponse> getStores(Long customerId) {
+    public Page<StoreCustomerResponse> getAllPage(int page, int size) {
 
-        Customer customer = getCustomerById(customerId);
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        PageRequest pageable = PageRequest.of(adjustedPage, size);
+        Page<Store> storesPage = storeRepository.findByStoreStatus(StoreStatus.OPERATIONAL,pageable);
 
-        List<Store> stores = storeRepository.findByStoreStatus(StoreStatus.OPERATIONAL);
-
-        List<StoreCustomerResponse> dtoList = new ArrayList<>();
-        for (Store store : stores) {
-            dtoList.add(new StoreCustomerResponse(
-                    store.getId(),
-                    store.getStoreName(),
-                    store.getStoreProfileUrl(),
-                    store.getStoreAddress(),
-                    store.getStorePhoneNumber(),
-                    store.getOpenedAt(),
-                    store.getClosedAt(),
-                    store.getMinPrice())
-            );
-        }
-        return dtoList;
+        return storesPage.map(store -> new StoreCustomerResponse(
+                store.getId(),
+                store.getStoreName(),
+                store.getStoreProfileUrl(),
+                store.getStoreAddress(),
+                store.getStorePhoneNumber(),
+                store.getOpenedAt(),
+                store.getClosedAt(),
+                store.getMinPrice()
+        ));
     }
 
+    // Customer 입장에서 가게 단건 조회
     @Transactional(readOnly = true)
-    public StoreResponse findById(Long storeId) {
+    public StoreResponse getStore(Long storeId) {
         Store store = getStoreById(storeId);
 
         List<Menu> menus = menuRepository.findByStoreId(storeId);
