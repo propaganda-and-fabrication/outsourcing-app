@@ -52,11 +52,12 @@ public enum ErrorCode {
 	UNAUTHORIZED_USER(UNAUTHORIZED, "인증되지 않은 사용자입니다."),
 
 	// 파일 관련 예외
-	S3_PUT_OBJECT_IO_EXCEPTION(INTERNAL_SERVER_ERROR, "이미지를 저장하는 도중에 예외가 발생했습니다."),
+	IMAGE_UPLOAD_IO_EXCEPTION(INTERNAL_SERVER_ERROR, "이미지를 저장하는 도중에 예외가 발생했습니다."),
 	FILE_IS_EMPTY(BAD_REQUEST, "파일이 비어있습니다."),
 	INVALID_FILE_TYPE(BAD_REQUEST, "사진 파일만 업로드 가능합니다."),
 	UPLOAD_ACCESS_DENIED(FORBIDDEN, "해당 위치에 파일을 저장할 권한이 없습니다."),
 	FILE_RESIZE_ERROR(INTERNAL_SERVER_ERROR, "파일 리사이징 중 예외가 발생했습니다."),
+	INVALID_UPLOAD_TYPE(BAD_REQUEST, "해당 타입은 다중 이미지 업로드를 할 수 없습니다."),
 
 	// 기타 예외
 	TYPE_MISMATCH(BAD_REQUEST, "잘못된 타입입니다."),
