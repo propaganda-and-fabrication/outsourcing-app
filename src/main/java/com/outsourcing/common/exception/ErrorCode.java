@@ -20,7 +20,7 @@ public enum ErrorCode {
 	UNSUPPORTED_TOKEN(BAD_REQUEST, "지원되지 않는 토큰입니다."),
 	MISSING_AUTHORIZATION_HEADER(UNAUTHORIZED, "JWT 토큰이 존재하지 않습니다."),
 	MISSING_AUTHENTICATION_INFORMATION(UNAUTHORIZED, "인증 정보가 누락되었습니다."),
-	ACCESS_DENIED(FORBIDDEN, "권한이 부족합니다."),
+	ACCESS_DENIED(FORBIDDEN, "요청에 대한 권한이 없습니다."),
 	LOGIN_FAILED(BAD_REQUEST, "로그인에 실패했습니다."),
 
 	// 유저 관련 예외

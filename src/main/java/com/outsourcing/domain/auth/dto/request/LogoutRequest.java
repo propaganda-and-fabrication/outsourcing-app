@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class LogoutRequest {
-
-	@NotBlank
-	private final String accessToken;
-
+	
 	@NotBlank
 	private final String refreshToken;
 }
