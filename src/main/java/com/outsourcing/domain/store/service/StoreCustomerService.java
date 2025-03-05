@@ -9,8 +9,6 @@ import com.outsourcing.domain.store.dto.response.StoreResponse;
 import com.outsourcing.domain.store.entity.Store;
 import com.outsourcing.domain.store.enums.StoreStatus;
 import com.outsourcing.domain.store.repository.StoreRepository;
-import com.outsourcing.domain.user.entity.Customer;
-import com.outsourcing.domain.user.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,14 +22,9 @@ import java.util.List;
 public class StoreCustomerService {
 
     private final StoreRepository storeRepository;
-    private final CustomerRepository customerRepository;
     private final MenuRepository menuRepository;
 
     // 공통 로직
-    private Customer getCustomerById(Long customerId) {
-        return customerRepository.findById(customerId)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
-    }
     private Store getStoreById(Long storeId) {
         return storeRepository.findById(storeId)
                 .orElseThrow(() -> new BaseException(ErrorCode.STORE_NOT_FOUND));
@@ -49,20 +42,17 @@ public class StoreCustomerService {
                 store.getId(),
                 store.getStoreName(),
                 store.getStoreProfileUrl(),
-                store.getStoreAddress(),
-                store.getStorePhoneNumber(),
-                store.getOpenedAt(),
-                store.getClosedAt(),
                 store.getMinPrice()
         ));
     }
 
     // Customer 입장에서 가게 단건 조회
     @Transactional(readOnly = true)
-    public StoreResponse getStore(Long customerId, Long storeId) {
-        Customer customer = getCustomerById(customerId);
+    public StoreResponse getStore(Long storeId) {
         Store store = getStoreById(storeId);
-
+        if (!store.getStoreStatus().equals(StoreStatus.OPERATIONAL)) {
+            throw new BaseException(ErrorCode.STORE_NOT_FOUND);
+        }
         List<Menu> menus = menuRepository.findByStoreId(storeId);
         return StoreResponse.of(store,menus);
     }

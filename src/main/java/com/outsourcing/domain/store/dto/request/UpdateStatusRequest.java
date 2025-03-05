@@ -2,11 +2,12 @@ package com.outsourcing.domain.store.dto.request;
 
 import com.outsourcing.domain.store.enums.StoreStatus;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 public class UpdateStatusRequest {
 
-    @NotBlank
+    @NotNull
     private StoreStatus storeStatus;
 }

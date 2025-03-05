@@ -38,7 +38,4 @@ public class Owner extends User {
 	public void decreaseStoreCount() {
 		this.storeCount -= 1;
 	}
-
-	public void setStoreCount(int i) {
-	}
 }

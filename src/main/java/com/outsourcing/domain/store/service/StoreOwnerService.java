@@ -5,6 +5,7 @@ import com.outsourcing.common.exception.ErrorCode;
 import com.outsourcing.domain.menu.entity.Menu;
 import com.outsourcing.domain.menu.repository.MenuRepository;
 import com.outsourcing.domain.store.dto.request.*;
+import com.outsourcing.domain.store.dto.response.OwnerStoresResponse;
 import com.outsourcing.domain.store.dto.response.StoreOwnerResponse;
 import com.outsourcing.domain.store.dto.response.StoreResponse;
 import com.outsourcing.domain.store.entity.Store;
@@ -28,11 +29,6 @@ public class StoreOwnerService {
     private final MenuRepository menuRepository;
 
     // 공통 로직
-    private Owner getOwnerById(Long ownerId) {
-        return ownerRepository.findById(ownerId)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
-    }
-
     private Store getStoreById(Long storeId) {
         return storeRepository.findById(storeId)
                 .orElseThrow(() -> new BaseException(ErrorCode.STORE_NOT_FOUND));
@@ -51,12 +47,14 @@ public class StoreOwnerService {
             Long ownerId,
             CreateStoreRequest request
     ) {
-        Owner owner = getOwnerById(ownerId);
+        Owner owner = ownerRepository.findById(ownerId).orElseThrow(
+                () -> new BaseException(ErrorCode.USER_NOT_FOUND)
+        );
 
         if (owner.getStoreCount() >= 3) {
             throw new BaseException(ErrorCode.MAX_STORE_LIMIT_REACHED);
         }
-
+        owner.increaseStoreCount();
         Store store = new Store(
                 owner,
                 request.getStoreName(),
@@ -75,34 +73,30 @@ public class StoreOwnerService {
 
     //내 가게 전체 조회
     @Transactional(readOnly = true)
-    public List<StoreOwnerResponse> getAll(Long ownerId) {
+    public List<OwnerStoresResponse> getAll(Long ownerId) {
 
-        Owner owner = getOwnerById(ownerId);
         List<Store> stores = storeRepository.findByOwnerId(ownerId);
 
         return stores.stream()
-                .map(store -> new StoreOwnerResponse(
+                .map(store -> new OwnerStoresResponse(
                         store.getId(),
                         store.getStoreName(),
                         store.getStoreProfileUrl(),
                         store.getStoreAddress(),
-                        store.getStorePhoneNumber(),
-                        store.getOpenedAt(),
-                        store.getClosedAt(),
-                        store.getStoreStatus(),
-                        store.getMinPrice()))
+                        store.getMinPrice(),
+                        store.getStoreStatus()))
                 .toList();
     }
 
     //내 가게 단건 조회
     @Transactional(readOnly = true)
     public StoreResponse getStore(Long ownerId, Long storeId) {
-        Owner owner = getOwnerById(ownerId);
+
         Store store = storeRepository.findByIdWithMenus(storeId);
 
         validateOwner(ownerId,store);
 
-        List<Menu> menus = store.getMenus();
+        List<Menu> menus = menuRepository.findByStoreId(storeId);
         return StoreResponse.of(store,menus);
     }
 
@@ -113,7 +107,6 @@ public class StoreOwnerService {
             UpdateNameRequest request,
             Long ownerId) {
 
-        Owner owner = getOwnerById(ownerId);
         Store store = getStoreById(storeId);
         validateOwner(ownerId,store);
 
@@ -125,14 +118,13 @@ public class StoreOwnerService {
     @Transactional
     public StoreOwnerResponse updateProfileUrl(
             Long storeId,
-            UpdateProfileUrlRequest request,
+            UpdateImageRequest request,
             Long ownerId) {
 
-        Owner owner = getOwnerById(ownerId);
         Store store = getStoreById(storeId);
         validateOwner(ownerId,store);
 
-        store.updateProfileUrl(request.getNewProfileUrl());
+        store.updateProfileUrl(request.getStoreProfileUrl());
         return StoreOwnerResponse.of(store);
     }
 
@@ -143,7 +135,6 @@ public class StoreOwnerService {
             UpdateAddressRequest request,
             Long ownerId) {
 
-        Owner owner = getOwnerById(ownerId);
         Store store = getStoreById(storeId);
         validateOwner(ownerId,store);
 
@@ -158,7 +149,6 @@ public class StoreOwnerService {
             UpdateNumberRequest request,
             Long ownerId) {
 
-        Owner owner = getOwnerById(ownerId);
         Store store = getStoreById(storeId);
         validateOwner(ownerId,store);
 
@@ -173,7 +163,6 @@ public class StoreOwnerService {
             UpdateStoreHoursRequest request,
             Long ownerId) {
 
-        Owner owner = getOwnerById(ownerId);
         Store store = getStoreById(storeId);
         validateOwner(ownerId,store);
 
@@ -193,7 +182,6 @@ public class StoreOwnerService {
             UpdateStatusRequest request,
             Long ownerId) {
 
-        Owner owner = getOwnerById(ownerId);
         Store store = getStoreById(storeId);
         validateOwner(ownerId,store);
 
@@ -203,7 +191,7 @@ public class StoreOwnerService {
             throw new BaseException(ErrorCode.INVALID_STORE_STATUS);
         }
 
-        store.updateStoreStatus(request.getStoreStatus());
+        store.updateStoreStatus(storeStatus);
         return StoreOwnerResponse.of(store);
     }
 
@@ -214,7 +202,6 @@ public class StoreOwnerService {
             UpdateMinPriceRequest request,
             Long ownerId) {
 
-        Owner owner = getOwnerById(ownerId);
         Store store = getStoreById(storeId);
         validateOwner(ownerId,store);
 
@@ -232,14 +219,16 @@ public class StoreOwnerService {
         Store store = storeRepository.findById(storeId).orElseThrow(
                 () -> new BaseException(ErrorCode.STORE_NOT_FOUND)
         );
-        store.setStoreStatus(StoreStatus.SHUTDOWN);
+        store.updateStoreStatus(StoreStatus.SHUTDOWN);
         storeRepository.save(store);
 
          //사장님의 등록된 가게의 카운트를 -1 해줘야함.
-        Owner owner = getOwnerById(ownerId);
+        Owner owner = ownerRepository.findById(ownerId).orElseThrow(
+                () -> new BaseException(ErrorCode.USER_NOT_FOUND)
+        );
         validateOwner(ownerId,store);
 
-        owner.setStoreCount(owner.getStoreCount()-1);
+        owner.decreaseStoreCount();
         ownerRepository.save(owner);
     }
 }

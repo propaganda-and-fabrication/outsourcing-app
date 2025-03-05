@@ -1,6 +1,5 @@
 package com.outsourcing.domain.store.dto.request;
 
-import com.outsourcing.domain.user.entity.Owner;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,9 +11,6 @@ import java.time.LocalTime;
 
 @Getter
 public class CreateStoreRequest {
-
-    @NotBlank
-    private Long ownerId;
 
     @NotBlank
     private String storeName;

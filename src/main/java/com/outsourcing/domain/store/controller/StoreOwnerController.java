@@ -1,15 +1,12 @@
 package com.outsourcing.domain.store.controller;
 
-import com.outsourcing.common.exception.BaseException;
-import com.outsourcing.common.exception.ErrorCode;
 import com.outsourcing.common.response.Response;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
 import com.outsourcing.domain.store.dto.request.*;
+import com.outsourcing.domain.store.dto.response.OwnerStoresResponse;
 import com.outsourcing.domain.store.dto.response.StoreOwnerResponse;
 import com.outsourcing.domain.store.dto.response.StoreResponse;
 import com.outsourcing.domain.store.service.StoreOwnerService;
-import com.outsourcing.domain.user.dto.request.customer.UpdateProfileUrlRequest;
-import com.outsourcing.domain.user.enums.UserRole;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,40 +21,29 @@ public class StoreOwnerController {
 
     private final StoreOwnerService storeOwnerService;
 
-    // 공통 구현 메서드
-    private Long getOwnerId(@AuthenticationPrincipal CustomUserDetails currentOwner) {
-        if (!currentOwner.getUserInfo().getRole().equals(UserRole.OWNER)) {
-            throw new BaseException(ErrorCode.ACCESS_DENIED);
-        }
-        return currentOwner.getUserInfo().getId();
-    }
-
     // 가게 생성
     @PostMapping("/v1/owners/stores")
     public Response<StoreOwnerResponse> createStore (
             @AuthenticationPrincipal CustomUserDetails currentOwner,
             @Valid @RequestBody CreateStoreRequest request
     ) {
-        Long ownerId = getOwnerId(currentOwner);
-        StoreOwnerResponse response = storeOwnerService.createStore(ownerId,request);
+        StoreOwnerResponse response = storeOwnerService.createStore(currentOwner.getUserInfo().getId(), request);
         return Response.of(response);
     }
 
     // 내 가게 전체 조회
-    @GetMapping("/v1/owners/{ownerId}/stores")
-    public Response<List<StoreOwnerResponse>> getAll(
+    @GetMapping("/v1/owners/stores")
+    public Response<List<OwnerStoresResponse>> getAll(
             @AuthenticationPrincipal CustomUserDetails currentOwner) {
-        Long ownerId = getOwnerId(currentOwner);
-        return Response.of(storeOwnerService.getAll(ownerId));
+        return Response.of(storeOwnerService.getAll(currentOwner.getUserInfo().getId()));
     }
 
     // 내 가게 단건 조회
-    @GetMapping("/v1/owners/{ownerId}/stores/{storeId}")
+    @GetMapping("/v1/owners/stores/{storeId}")
     public Response<StoreResponse> getOne(
             @AuthenticationPrincipal CustomUserDetails currentOwner,
             @PathVariable Long storeId) {
-        Long ownerId = getOwnerId(currentOwner);
-        return Response.of(storeOwnerService.getStore(ownerId,storeId));
+        return Response.of(storeOwnerService.getStore(currentOwner.getUserInfo().getId(), storeId));
     }
 
     // 가게 이름 수정
@@ -67,68 +53,62 @@ public class StoreOwnerController {
             @Valid @RequestBody UpdateNameRequest request,
             @AuthenticationPrincipal CustomUserDetails currentOwner
     ) {
-        Long ownerId = getOwnerId(currentOwner);
-        StoreOwnerResponse response = storeOwnerService.updateStoreName(storeId,request,ownerId);
+        StoreOwnerResponse response = storeOwnerService.updateStoreName(storeId,request,currentOwner.getUserInfo().getId());
         return Response.of(response);
     }
 
     // 가게 이미지 수정
-    @PatchMapping("/v1/owners/stores/{storeId}/profile-image")
+    @PatchMapping("/v1/owners/stores/{storeId}/image")
     public Response<StoreOwnerResponse> updateProfileUrl(
             @PathVariable Long storeId,
-            @Valid @RequestBody UpdateProfileUrlRequest request,
+            @Valid @RequestBody UpdateImageRequest request,
             @AuthenticationPrincipal CustomUserDetails currentOwner
     ) {
-        Long ownerId = getOwnerId(currentOwner);
-        StoreOwnerResponse response = storeOwnerService.updateProfileUrl(storeId,request,ownerId);
+        StoreOwnerResponse response = storeOwnerService.updateProfileUrl(storeId,request,currentOwner.getUserInfo().getId());
         return Response.of(response);
     }
 
     //가게 주소 수정
-    @PatchMapping("/v1/owners/stores/{storeId}/store-address")
+    @PatchMapping("/v1/owners/stores/{storeId}/address")
     public Response<StoreOwnerResponse> updateStoreAddress(
             @PathVariable Long storeId,
             @Valid @RequestBody UpdateAddressRequest request,
             @AuthenticationPrincipal CustomUserDetails currentOwner
     ) {
-        Long ownerId = getOwnerId(currentOwner);
-        StoreOwnerResponse response = storeOwnerService.updateStoreAddress(storeId,request,ownerId);
+        StoreOwnerResponse response = storeOwnerService.updateStoreAddress(storeId,request,currentOwner.getUserInfo().getId());
         return Response.of(response);
     }
 
     // 가게 전화번호 수정
-    @PatchMapping("/v1/owners/stores/{storeId}/store-phone")
+    @PatchMapping("/v1/owners/stores/{storeId}/phone")
     public Response<StoreOwnerResponse> updateStorePhoneNumber(
             @PathVariable Long storeId,
             @Valid @RequestBody UpdateNumberRequest request,
             @AuthenticationPrincipal CustomUserDetails currentOwner
     ) {
-        Long ownerId = getOwnerId(currentOwner);
-        StoreOwnerResponse response = storeOwnerService.updateStorePhoneNumber(storeId,request,ownerId);
+        StoreOwnerResponse response = storeOwnerService.updateStorePhoneNumber(storeId,request,currentOwner.getUserInfo().getId());
         return Response.of(response);
     }
 
     // 가게 영업시간 수정
-    @PatchMapping("/v1/owners/stores/{storeId}/store-hours")
+    @PatchMapping("/v1/owners/stores/{storeId}/hours")
     public Response<StoreOwnerResponse> updateStoreHours(
             @PathVariable Long storeId,
             @Valid @RequestBody UpdateStoreHoursRequest request,
             @AuthenticationPrincipal CustomUserDetails currentOwner
     ) {
-        Long ownerId = getOwnerId(currentOwner);
-        StoreOwnerResponse response = storeOwnerService.updateStoreHours(storeId,request,ownerId);
+        StoreOwnerResponse response = storeOwnerService.updateStoreHours(storeId,request,currentOwner.getUserInfo().getId());
         return Response.of(response);
     }
 
     // 가게 상태 수정
-    @PatchMapping("/v1/owners/stores/{storeId}/store-status")
+    @PatchMapping("/v1/owners/stores/{storeId}/status")
     public Response<StoreOwnerResponse> updateStoreStatus(
             @PathVariable Long storeId,
             @Valid @RequestBody UpdateStatusRequest request,
             @AuthenticationPrincipal CustomUserDetails currentOwner
     ) {
-        Long ownerId = getOwnerId(currentOwner);
-        StoreOwnerResponse response = storeOwnerService.updateStoreStatus(storeId,request,ownerId);
+        StoreOwnerResponse response = storeOwnerService.updateStoreStatus(storeId,request,currentOwner.getUserInfo().getId());
         return Response.of(response);
     }
 
@@ -139,14 +119,12 @@ public class StoreOwnerController {
             @Valid @RequestBody UpdateMinPriceRequest request,
             @AuthenticationPrincipal CustomUserDetails currentOwner
     ) {
-        Long ownerId = getOwnerId(currentOwner);
-        StoreOwnerResponse response = storeOwnerService.updateMinPrice(storeId,request,ownerId);
+        StoreOwnerResponse response = storeOwnerService.updateMinPrice(storeId,request,currentOwner.getUserInfo().getId());
         return Response.of(response);
     }
     //가게 삭제(실질적인 삭제가 아닌 영업 상태만 변경)
-    @PatchMapping("/v1/owners/stores/{storeId}")
+    @PatchMapping("/v1/owners/stores/{storeId}/shutdown")
     public void deleteStore(@PathVariable Long storeId, @AuthenticationPrincipal CustomUserDetails currentOwner) {
-        Long ownerId = getOwnerId(currentOwner);
-        storeOwnerService.deleteById(storeId, ownerId);
+        storeOwnerService.deleteById(storeId, currentOwner.getUserInfo().getId());
     }
 }
