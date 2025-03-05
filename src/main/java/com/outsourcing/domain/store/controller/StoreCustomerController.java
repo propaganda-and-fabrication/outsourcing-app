@@ -4,21 +4,15 @@ import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.common.exception.ErrorCode;
 import com.outsourcing.common.response.Response;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
-import com.outsourcing.domain.menu.entity.Menu;
 import com.outsourcing.domain.store.dto.response.StoreCustomerResponse;
 import com.outsourcing.domain.store.dto.response.StoreResponse;
-import com.outsourcing.domain.store.entity.Store;
 import com.outsourcing.domain.store.service.StoreCustomerService;
-import com.outsourcing.domain.user.entity.Customer;
 import com.outsourcing.domain.user.enums.UserRole;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,6 +45,6 @@ public class StoreCustomerController {
             @AuthenticationPrincipal CustomUserDetails currentCustomer,
             @PathVariable Long storeId) {
         Long customerId = getCustomerId(currentCustomer);
-        return Response.of(storeCustomerService.getStore(storeId));
+        return Response.of(storeCustomerService.getStore(customerId,storeId));
     }
 }

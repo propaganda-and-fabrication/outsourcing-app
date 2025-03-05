@@ -60,7 +60,8 @@ public class StoreCustomerService {
 
     // Customer 입장에서 가게 단건 조회
     @Transactional(readOnly = true)
-    public StoreResponse getStore(Long storeId) {
+    public StoreResponse getStore(Long customerId, Long storeId) {
+        Customer customer = getCustomerById(customerId);
         Store store = getStoreById(storeId);
 
         List<Menu> menus = menuRepository.findByStoreId(storeId);
