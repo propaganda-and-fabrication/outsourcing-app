@@ -26,6 +26,6 @@ public class AuthCommonController {
 	public Response<Void> logout(@Valid @RequestBody LogoutRequest request,
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 		authCommonService.logout(request.getAccessToken(), request.getRefreshToken(), currentUser);
-		return Response.of(null, "로그아웃 되었습니다.");
+		return Response.of(null);
 	}
 }

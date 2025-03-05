@@ -37,7 +37,7 @@ public class CustomerController {
 	@GetMapping("/v1/customers/me")
 	public Response<CustomerResponse> getCustomerProfile(@AuthenticationPrincipal CustomUserDetails currentUser) {
 		CustomerResponse response = customerService.getCustomerProfile(currentUser);
-		return Response.of(response, "Customer 프로필 조회 성공");
+		return Response.of(response);
 	}
 
 	@PatchMapping("/v1/customers/me/nickname")
@@ -45,7 +45,7 @@ public class CustomerController {
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
 		CustomerResponse response = customerService.updateNickname(request.getChangeNickname(), currentUser);
-		return Response.of(response, "Customer 닉네임 수정 성공");
+		return Response.of(response);
 	}
 
 	@PostMapping("/v1/customers/me/addresses")
@@ -53,7 +53,7 @@ public class CustomerController {
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
 		GetAllAddressResponse response = customerService.addAddress(request.getAddress(), currentUser);
-		return Response.of(response, "Customer 주소 등록 성공");
+		return Response.of(response);
 	}
 
 	@PatchMapping("/v1/customers/me/address/{addressId}")
@@ -62,7 +62,7 @@ public class CustomerController {
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
 		GetAllAddressResponse response = customerService.updateAddress(addressId, request.getNewAddress(), currentUser);
-		return Response.of(response, "Customer 주소 수정 성공");
+		return Response.of(response);
 	}
 
 	@PatchMapping("/v1/customers/me/addresses/{addressId}/status")
@@ -70,13 +70,13 @@ public class CustomerController {
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
 		GetAllAddressResponse response = customerService.updateAddressStatus(addressId, currentUser);
-		return Response.of(response, "Customer 주소 선택 성공");
+		return Response.of(response);
 	}
 
 	@GetMapping("/v1/customers/me/addresses")
 	public Response<GetAllAddressResponse> getAllAddresses(@AuthenticationPrincipal CustomUserDetails currentUser) {
 		GetAllAddressResponse response = customerService.getAllAddressResponse(currentUser);
-		return Response.of(response, "Customer 주소 전체 조회 성공");
+		return Response.of(response);
 	}
 
 	@DeleteMapping("/v1/customers/me/addresses/{addressId}")
@@ -84,7 +84,7 @@ public class CustomerController {
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
 		GetAllAddressResponse response = customerService.deleteAddress(addressId, currentUser);
-		return Response.of(response, "Customer 주소 삭제 성공");
+		return Response.of(response);
 
 	}
 
@@ -93,7 +93,7 @@ public class CustomerController {
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
 		CustomerResponse response = customerService.updatePhoneNumber(request.getNewPhoneNumber(), currentUser);
-		return Response.of(response, "Customer 휴대폰 번호 수정 성공");
+		return Response.of(response);
 	}
 
 	@PatchMapping("/v1/customers/me/password")
@@ -102,7 +102,7 @@ public class CustomerController {
 
 		CustomerResponse response = customerService.updatePassword(request.getOldPassword(),
 			request.getNewPassword(), currentUser);
-		return Response.of(response, "Customer 비밀번호 수정 성공");
+		return Response.of(response);
 	}
 
 	//TODO: 파일 시스템 완료 후 테스트 예정
@@ -111,7 +111,7 @@ public class CustomerController {
 		@AuthenticationPrincipal CustomUserDetails currentUser) {
 
 		CustomerResponse response = customerService.updateCustomerProfileUrl(request.getNewProfileUrl(), currentUser);
-		return Response.of(response, "Customer 프로필 이미지 수정 성공");
+		return Response.of(response);
 	}
 
 	@PostMapping("/v1/customers/me/delete")
@@ -120,6 +120,6 @@ public class CustomerController {
 
 		String accessToken = httpServletRequest.getHeader("Authorization");
 		customerService.deleteCustomer(request.getPassword(), accessToken, currentUser);
-		return Response.of(null, "Customer 탈퇴 성공");
+		return Response.of(null);
 	}
 }

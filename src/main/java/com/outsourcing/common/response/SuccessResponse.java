@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 public class SuccessResponse<T> implements Response<T> {
 
 	private final T data;
-	private final String message;
 
 	@Override
 	public T getError() {

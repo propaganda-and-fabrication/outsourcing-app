@@ -27,18 +27,18 @@ public class AuthCustomerController {
 	public Response<TokenResponse> signUpCustomer(@Valid @RequestBody CustomerSignUpRequest request) {
 		TokenResponse tokenResponse = customerService.signUpCustomer(request.getEmail(), request.getPassword(),
 			request.getName(), request.getPhoneNumber(), request.getAddress());
-		return Response.of(tokenResponse, "Customer 회원가입 성공");
+		return Response.of(tokenResponse);
 	}
 
 	@PostMapping("/v1/auth/customers/sign-in")
 	public Response<TokenResponse> signInCustomer(@Valid @RequestBody SignInRequest request) {
 		TokenResponse tokenResponse = customerService.signInCustomer(request.getEmail(), request.getPassword());
-		return Response.of(tokenResponse, "Customer 로그인 성공");
+		return Response.of(tokenResponse);
 	}
 
 	@PostMapping("/v1/auth/customers/reissue")
 	public Response<TokenResponse> customerTokenReissue(@Valid @RequestBody TokenReissueRequest request) {
 		TokenResponse tokenResponse = customerService.customerTokenReissue(request.getRefreshToken());
-		return Response.of(tokenResponse, "Customer 토큰 재발급 성공");
+		return Response.of(tokenResponse);
 	}
 }
