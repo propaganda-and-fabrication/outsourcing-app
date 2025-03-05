@@ -37,7 +37,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(request ->
 				request.requestMatchers(POST, "/api/*/auth/owners/**", "/api/*/auth/customers/**").permitAll()
 					.requestMatchers(POST, "/api/*/auth/logout").authenticated()
-					.requestMatchers("/api/*/flies", "/api/*/flies/multiple").authenticated()
+					.requestMatchers("/api/*/flies", "/api/*/flies/multiples").authenticated()
 					.requestMatchers("/api/*/owners/**").hasAuthority(OWNER.getAuthority())
 					.requestMatchers("/api/*/customers/**").hasAuthority(CUSTOMER.getAuthority())
 					.anyRequest().authenticated())

@@ -39,5 +39,8 @@ out/
 ### application.yml ###
 src/main/resources/local/**
 
+### env.properties ###
+/src/main/resources/env.properties
+
 ### .http ###
 src/main/java/com/outsourcing/*.http
