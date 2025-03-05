@@ -48,7 +48,8 @@ public enum ErrorCode {
 	STORE_NOT_FOUND(NOT_FOUND, "가게를 찾을 수 없습니다."),
 	INVALID_STORE_ACCESS(FORBIDDEN, "해당 가게에 대한 접근 권한이 없습니다."),
 	MENU_NOT_FOUND(NOT_FOUND, "해당 메뉴를 찾을 수 없습니다."),
-	MENU_DELETED(NOT_FOUND, "해당 메뉴는 이미 삭제되었습니다."),
+	MENU_ALREADY_DELETED(NOT_FOUND, "해당 메뉴는 이미 삭제되었습니다."),
+	UNAUTHORIZED_USER(UNAUTHORIZED, "인증되지 않은 사용자입니다.")
 
 	// 파일 관련 예외
 	S3_PUT_OBJECT_IO_EXCEPTION(INTERNAL_SERVER_ERROR, "이미지를 저장하는 도중에 예외가 발생했습니다."),
