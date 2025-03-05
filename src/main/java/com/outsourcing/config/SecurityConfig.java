@@ -28,15 +28,15 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.httpBasic(AbstractHttpConfigurer::disable)
-			.sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+			.sessionManagement(session ->
+				session.sessionCreationPolicy(STATELESS))
 			.csrf(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests(request ->
-				request.requestMatchers(POST, "/api/*/auth/**")
-					.permitAll()
-					.requestMatchers(POST, "/api/*/auth/logout")
-					.authenticated()
+				request.requestMatchers(POST, "/api/*/auth/**").permitAll()
+					.requestMatchers(POST, "/api/*/auth/logout").authenticated()
 					.requestMatchers("/api/*/owners/**").hasAuthority(OWNER.getAuthority())
 					.requestMatchers("/api/*/customers/**").hasAuthority(CUSTOMER.getAuthority())
+					.requestMatchers("/api/*/flies", "/api/*/flies/multiple").authenticated()
 					.anyRequest().authenticated())
 			.cors(AbstractHttpConfigurer::disable)
 			.formLogin(AbstractHttpConfigurer::disable)
