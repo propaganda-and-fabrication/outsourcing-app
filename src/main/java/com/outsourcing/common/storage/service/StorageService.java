@@ -1,4 +1,4 @@
-package com.outsourcing.common.storage;
+package com.outsourcing.common.storage.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
