@@ -1,0 +1,120 @@
+* [33m13a2153[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeat/menu[m[33m, [m[1;31morigin/feat/menu[m[33m)[m Chore: aws 의존성 추가 및 S3 설정
+* [33m2516e8a[m feat: 메뉴 조회 기능 추가
+* [33m2e792c6[m Chore: 성공 응답 시 메시지 제거
+[31m|[m * [33md48519c[m[33m ([m[1;31morigin/feat/store[m[33m)[m Feat : 삭제 기능 중 스토어 카운트 다운 기능 추가
+[31m|[m * [33mb28d286[m Feat : 삭제 구현
+[31m|[m *   [33m37c9583[m Feat : 스토어 생성, 조회, 수정 기능 구현
+[31m|[m [33m|[m[34m\[m  
+[31m|[m * [34m|[m [33m3cfc950[m Feat : 가게 공통 ResponseDto 생성
+[31m|[m * [34m|[m [33mc2c1066[m Feat : 가게 생성, 조회, 수정 기능 개발
+[31m|[m * [34m|[m [33m168c4f1[m Feat : 가게 관련 에러코드 추가
+[31m|[m * [34m|[m [33m7737771[m Feat : 가게 관련 에러코드 추가
+[31m|[m [34m|[m [34m|[m * [33mcb1a5cd[m[33m ([m[1;31morigin/develop[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdevelop[m[33m)[m Merge pull request #37 from propaganda-and-fabrication/chore/s3-config
+[31m|[m [34m|[m [34m|[m[34m/[m[36m|[m 
+[31m|[m [34m|[m [34m|[m * [33mb915144[m Chore: aws 의존성 추가 및 S3 설정
+[31m|[m [34m|[m [34m|[m[34m/[m  
+[31m|[m [34m|[m * [33m7b23af7[m Merge pull request #36 from propaganda-and-fabrication/chore/response-change
+[31m|[m [34m|[m[31m/[m[1;32m|[m 
+[31m|[m[31m/[m[34m|[m [1;32m|[m 
+[31m|[m [34m|[m * [33m79ec6d6[m Chore: 성공 응답 시 메시지 제거
+[31m|[m [34m|[m[34m/[m  
+* [34m|[m   [33m38b0743[m Merge pull request #27 from propaganda-and-fabrication/feat/menu
+[34m|[m[1;34m\[m [34m\[m  
+[34m|[m [1;34m|[m[34m/[m  
+[34m|[m[34m/[m[1;34m|[m   
+[34m|[m * [33mf038d3b[m feat: 메뉴 응답 객체에 가게 이름 추가
+[34m|[m * [33m5a781ab[m refactor: 중복 코드 제거 및 메서드 활용 개선
+[34m|[m *   [33mdd0149a[m Merge branch 'develop' into feat/menu
+[34m|[m [1;35m|[m[34m\[m  
+[34m|[m [1;35m|[m[34m/[m  
+[34m|[m[34m/[m[1;35m|[m   
+* [1;35m|[m   [33mcac9dd9[m Merge pull request #31 from propaganda-and-fabrication/fix/address
+[31m|[m[32m\[m [1;35m\[m  
+[31m|[m * [1;35m|[m [33md105816[m Fix: 주소 변경 및 삭제 수정
+[31m|[m[31m/[m [1;35m/[m  
+* [1;35m|[m   [33m9258722[m Merge pull request #28 from propaganda-and-fabrication/refactor/user
+[33m|[m[34m\[m [1;35m\[m  
+[33m|[m * [1;35m|[m [33mfd0f5f7[m Refactor: `CustomerSignUpRequest` 생성자를 `@RequiredArgsConstructor`로 변경
+[33m|[m * [1;35m|[m [33m7c64f69[m Refactor: user 패키지 코드 수정
+[33m|[m * [1;35m|[m [33m823824a[m Refactor: Auth 리팩토링
+[33m|[m [34m|[m * [33m01ce577[m feat: 메뉴 수정/삭제 기능 추가 및 도메인 리팩토링
+[33m|[m [34m|[m *   [33m0962ca5[m Merge branch 'develop' into feat/menu
+[33m|[m [34m|[m [35m|[m[33m\[m  
+[33m|[m [34m|[m[33m_[m[35m|[m[33m/[m  
+[33m|[m[33m/[m[34m|[m [35m|[m   
+* [34m|[m [35m|[m   [33m600e4e7[m Merge pull request #24 from propaganda-and-fabrication/feat/store-entity
+[1;31m|[m[1;32m\[m [34m\[m [35m\[m  
+[1;31m|[m * [34m|[m [35m|[m [33m65b2680[m Mod : ResponseDto 이름 변경
+[1;31m|[m * [34m|[m [35m|[m [33m3276880[m Refactor : update 분기 처리 및 불필요한 코드 삭제
+[1;31m|[m * [34m|[m [35m|[m [33mf2aa16c[m feat : 스토어 관련 dto 생성
+[1;31m|[m [34m|[m[34m/[m [35m/[m  
+* [34m|[m [35m|[m   [33mf67fa59[m Merge pull request #25 from propaganda-and-fabrication/feat/order
+[34m|[m[1;34m\[m [34m\[m [35m\[m  
+[34m|[m [1;34m|[m[34m/[m [35m/[m  
+[34m|[m[34m/[m[1;34m|[m [35m|[m   
+[34m|[m * [35m|[m [33m922eb45[m[33m ([m[1;31morigin/feat/order[m[33m)[m Feat: `Order` 중간 커밋.
+[34m|[m[34m/[m [35m/[m  
+* [35m|[m   [33m010a85b[m Merge pull request #23 from propaganda-and-fabrication/refactor/auth
+[1;35m|[m[1;36m\[m [35m\[m  
+[1;35m|[m * [35m|[m [33m6983a43[m Refactor: `Auth` 리팩토링
+[1;35m|[m[1;35m/[m [35m/[m  
+[1;35m|[m * [33mfb07569[m feat: 메뉴 생성 기능 추가
+[1;35m|[m *   [33m8aea144[m Merge remote-tracking branch 'origin/develop' into feat/menu
+[1;35m|[m [31m|[m[1;35m\[m  
+[1;35m|[m [31m|[m[1;35m/[m  
+[1;35m|[m[1;35m/[m[31m|[m   
+* [31m|[m   [33m1320aa3[m Merge pull request #19 from propaganda-and-fabrication/feat/user-owner-service
+[33m|[m[34m\[m [31m\[m  
+[33m|[m * [31m|[m [33m508ca16[m[33m ([m[1;31morigin/feat/user-owner-service[m[33m, [m[1;32mfeat/user-owner-service[m[33m)[m Feat: `Owner` 관련 서비스 구현
+[33m|[m[33m/[m [31m/[m  
+* [31m|[m   [33m7d64242[m Merge pull request #18 from propaganda-and-fabrication/feat/user-customer-service
+[35m|[m[36m\[m [31m\[m  
+[35m|[m * [31m|[m [33m1372eb3[m Feat: Customer 관련 서비스 구현
+[35m|[m[35m/[m [31m/[m  
+[35m|[m * [33m1dc4e99[m feat: 메뉴 도메인 구조 설정 및 기본 클래스 구현
+[35m|[m[35m/[m  
+*   [33mbf0ce02[m Merge pull request #17 from propaganda-and-fabrication/chore/response-structure
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33ma969142[m Chore: 응답 구조 변경
+[1;31m|[m * [33m2d28d0a[m Chore: 응답 구조 변경
+[1;31m|[m[1;31m/[m  
+*   [33m1394324[m Merge pull request #16 from propaganda-and-fabrication/feat/auth
+[1;33m|[m[1;34m\[m  
+[1;33m|[m * [33m9e631db[m Refactor: `RefreshTokenRepository`에 @Override 안되어있던 부분 추가
+[1;33m|[m * [33m9924749[m Feat: 유저 인증/인가 구현
+* [1;34m|[m   [33m82ba250[m Merge pull request #12 from propaganda-and-fabrication/feat/store-entity
+[1;34m|[m[1;36m\[m [1;34m\[m  
+[1;34m|[m [1;36m|[m[1;34m/[m  
+[1;34m|[m[1;34m/[m[1;36m|[m   
+[1;34m|[m * [33m30c4576[m[33m ([m[1;31morigin/feat/store-entity[m[33m)[m Style : 미사용 import 제거
+[1;34m|[m * [33m7a07a95[m Refactor : 스토어 엔티티 부분 타입 변경 및 어노테이션 추가
+[1;34m|[m * [33m4ed49bb[m feat : 스토어 엔티티 및 관련 이넘 생성
+[1;34m|[m[1;34m/[m  
+*   [33m98d61f4[m Merge pull request #10 from propaganda-and-fabrication/feat/user-entity
+[31m|[m[32m\[m  
+[31m|[m * [33m0ef1b77[m Refactor: 코드 일관성을 위한 수정
+[31m|[m * [33m046e956[m Feat: `User` 및 `User` 관련 엔티티 생성
+[31m|[m[31m/[m  
+*   [33m5eb870d[m Merge pull request #8 from propaganda-and-fabrication/fix/common-setup
+[33m|[m[34m\[m  
+[33m|[m * [33m9caadd4[m Refactor: `BaseTime` 필드명 수정
+[33m|[m * [33m8bda0c9[m[33m ([m[1;31morigin/fix/common-setup[m[33m, [m[1;32mfix/common-setup[m[33m)[m Fix: Response 타입 문제 및 BaseTime 오타 수정
+[33m|[m[33m/[m  
+*   [33mfb30607[m Merge pull request #6 from propaganda-and-fabrication/chore/common-setup
+[35m|[m[36m\[m  
+[35m|[m * [33mee9fe9f[m Chore: 프로젝트 공통 클래스 생성 및 설정
+[35m|[m[35m/[m  
+*   [33ma9555fb[m Merge pull request #5 from propaganda-and-fabrication/chore/setup-dependencies-and-config
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33m8f0948a[m Chore: 의존성 추가 및 설정 파일 추가
+[1;31m|[m[1;31m/[m  
+*   [33m9651943[m Merge pull request #2 from propaganda-and-fabrication/docs/pr-issue-templates
+[1;33m|[m[1;34m\[m  
+[1;33m|[m * [33mf269d26[m Docs: Issue Template 전체 수정
+* [1;34m|[m [33m489b00b[m Merge pull request #1 from propaganda-and-fabrication/docs/pr-issue-templates
+[1;35m|[m[1;34m\[m[1;34m|[m 
+[1;35m|[m * [33m9a7a514[m Docs: PR Template 수정
+[1;35m|[m * [33m652502f[m Docs: ISSUE Template 수정 및 추가"
+[1;35m|[m * [33m9779a25[m Docs: PR 및 ISSUE Template 설정
+[1;35m|[m[1;35m/[m  
+* [33m414d029[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m first commit
