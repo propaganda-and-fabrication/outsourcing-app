@@ -59,6 +59,9 @@ dependencies {
     implementation platform('software.amazon.awssdk:bom:2.27.21')
     implementation 'software.amazon.awssdk:s3'
 
+    // thumbnailator
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.20'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

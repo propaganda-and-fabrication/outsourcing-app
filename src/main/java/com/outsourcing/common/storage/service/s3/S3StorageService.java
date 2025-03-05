@@ -1,9 +1,9 @@
-package com.outsourcing.common.storage.s3;
+package com.outsourcing.common.storage.service.s3;
 
 import static com.outsourcing.common.exception.ErrorCode.*;
 import static org.springframework.http.MediaType.*;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.outsourcing.common.exception.BaseException;
-import com.outsourcing.common.storage.StorageService;
 import com.outsourcing.common.storage.dto.response.UploadResponse;
 import com.outsourcing.common.storage.enums.UploadType;
+import com.outsourcing.common.storage.service.StorageService;
 import com.outsourcing.common.util.FileUtils;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
 import com.outsourcing.domain.user.enums.UserRole;
@@ -59,13 +59,11 @@ public class S3StorageService implements StorageService {
 			.contentType(multipartFile.getContentType())
 			.build();
 
-		try {
-			s3Client.putObject(request,
-				RequestBody.fromInputStream(multipartFile.getInputStream(), multipartFile.getSize()));
-		} catch (IOException ioe) {
-			log.error("[IOException]: {} | S3 파일 업로드 중 예외 발생", ioe.getLocalizedMessage());
-			throw new BaseException(S3_PUT_OBJECT_IO_EXCEPTION);
-		}
+		byte[] resizedImageBytes = FileUtils.resize(multipartFile, 300, 300);
+
+		//  리사이즈 후 반환되는 InputStream의 크기와 S3 업로드 시 제공하는 콘텐츠 길이가 일치해야 함
+		s3Client.putObject(request,
+			RequestBody.fromInputStream(new ByteArrayInputStream(resizedImageBytes), resizedImageBytes.length));
 		log.info("https://{}.s3.{}.amazonaws.com/{}", bucket, region, key);
 		return UploadResponse.of(key);
 	}

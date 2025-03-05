@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.outsourcing.common.response.Response;
 import com.outsourcing.common.storage.dto.response.UploadResponse;
-import com.outsourcing.common.storage.s3.S3StorageService;
+import com.outsourcing.common.storage.service.s3.S3StorageService;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
