@@ -20,7 +20,7 @@ public enum ErrorCode {
 	UNSUPPORTED_TOKEN(BAD_REQUEST, "지원되지 않는 토큰입니다."),
 	MISSING_AUTHORIZATION_HEADER(UNAUTHORIZED, "JWT 토큰이 존재하지 않습니다."),
 	MISSING_AUTHENTICATION_INFORMATION(UNAUTHORIZED, "인증 정보가 누락되었습니다."),
-	ACCESS_DENIED(FORBIDDEN, "권한이 부족합니다."),
+	ACCESS_DENIED(FORBIDDEN, "요청에 대한 권한이 없습니다."),
 	LOGIN_FAILED(BAD_REQUEST, "로그인에 실패했습니다."),
 
 	// 유저 관련 예외
@@ -57,8 +57,14 @@ public enum ErrorCode {
 	MENU_NOT_FOUND(NOT_FOUND, "해당 메뉴를 찾을 수 없습니다."),
 	MENU_DELETED(NOT_FOUND, "해당 메뉴는 이미 삭제되었습니다."),
 
-	// 이후 내용을 추가
+	// 파일 관련 예외
+	S3_PUT_OBJECT_IO_EXCEPTION(INTERNAL_SERVER_ERROR, "이미지를 저장하는 도중에 예외가 발생했습니다."),
+	FILE_IS_EMPTY(BAD_REQUEST, "파일이 비어있습니다."),
+	INVALID_FILE_TYPE(BAD_REQUEST, "사진 파일만 업로드 가능합니다."),
+	UPLOAD_ACCESS_DENIED(FORBIDDEN, "해당 위치에 파일을 저장할 권한이 없습니다."),
+	FILE_RESIZE_ERROR(INTERNAL_SERVER_ERROR, "파일 리사이징 중 예외가 발생했습니다."),
 
+	// 기타 예외
 	TYPE_MISMATCH(BAD_REQUEST, "잘못된 타입입니다."),
 
 	// 서버 관련 예외

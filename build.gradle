@@ -52,6 +52,16 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
+    // spring cloud aws starter
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter:3.3.0'
+
+    // aws java sdk for amazon s3
+    implementation platform('software.amazon.awssdk:bom:2.27.21')
+    implementation 'software.amazon.awssdk:s3'
+
+    // thumbnailator
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.20'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

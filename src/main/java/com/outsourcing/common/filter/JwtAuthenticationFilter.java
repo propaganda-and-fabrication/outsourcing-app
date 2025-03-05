@@ -1,16 +1,14 @@
 package com.outsourcing.common.filter;
 
 import static com.outsourcing.common.exception.ErrorCode.*;
+import static java.lang.Boolean.*;
 import static org.springframework.http.MediaType.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,44 +30,33 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RedisTemplate<String, String> redisTemplate;
-	private final List<String> whitelist = new ArrayList<>(
-		List.of("/api/v1/auth/customers", "/api/v1/auth/owners", "/api/v1/auth/sign-in", "/api/v1/auth/reissue"));
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-		FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		FilterChain filterChain
+	) throws ServletException, IOException {
 
-		String requestURI = request.getRequestURI();
-
-		// whitelist에 해당하는 URL이면 토큰 검증을 건너뛰고 바로 다음 필터로 넘어감
-		boolean isWhitelisted = whitelist.stream().anyMatch(requestURI::startsWith);
-		if (isWhitelisted) {
+		// Header에 토큰이 존재하는지 확인하고 없으면 바로 다음 필터로 보냄
+		String accessTokenWithBearer = request.getHeader("Authorization");
+		if (accessTokenWithBearer == null || !accessTokenWithBearer.startsWith("Bearer ")) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 
-		String accessTokenWithBearer = request.getHeader("Authorization");
-
-		// Header에 토큰이 존재하는지 확인
-		if (accessTokenWithBearer == null || !accessTokenWithBearer.startsWith("Bearer ")) {
-			returnErrorResponse(MISSING_AUTHORIZATION_HEADER, response);
-			return;
-		}
-
-		Boolean isBlacklisted = redisTemplate.hasKey("blacklist:" + accessTokenWithBearer);
-		if (Boolean.TRUE.equals(isBlacklisted)) {
-			returnErrorResponse(MISSING_AUTHENTICATION_INFORMATION, response);
-			return;
-		}
-
-		String accessTokenWithoutBearer = jwtTokenProvider.substringToken(accessTokenWithBearer);
 		try {
+			Boolean isBlacklisted = redisTemplate.hasKey("blacklist:" + accessTokenWithBearer);
+			if (TRUE.equals(isBlacklisted)) {
+				throw new BaseException(MISSING_AUTHENTICATION_INFORMATION);
+			}
+
+			String accessTokenWithoutBearer = jwtTokenProvider.substringToken(accessTokenWithBearer);
 			// 만료 시간 검증
 			if (!jwtTokenProvider.isTokenValidated(accessTokenWithoutBearer)) {
 				throw new BaseException(INVALID_TOKEN);
@@ -87,29 +74,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			filterChain.doFilter(request, response);
 		} catch (SecurityException | MalformedJwtException e) {
-			log.error("[{}]: {}", e.getClass().getSimpleName(), e.getLocalizedMessage());
-			returnErrorResponse(INVALID_TOKEN_SIGNATURE, response);
+			handleJwtException(request, response, e, INVALID_TOKEN_SIGNATURE);
 		} catch (ExpiredJwtException e) {
-			log.error("[{}]: {}", e.getClass().getSimpleName(), e.getLocalizedMessage());
-			returnErrorResponse(TOKEN_ALREADY_EXPIRED, response);
+			handleJwtException(request, response, e, TOKEN_ALREADY_EXPIRED);
 		} catch (UnsupportedJwtException e) {
-			log.error("[{}]: {}", e.getClass().getSimpleName(), e.getLocalizedMessage());
-			returnErrorResponse(UNSUPPORTED_TOKEN, response);
+			handleJwtException(request, response, e, UNSUPPORTED_TOKEN);
 		} catch (BaseException e) {
-			log.error("[{}]: {}", e.getClass().getSimpleName(), e.getLocalizedMessage());
-			returnErrorResponse(e.getErrorCode(), response);
+			handleJwtException(request, response, e, e.getErrorCode());
 		}
 	}
 
-	private void returnErrorResponse(ErrorCode errorCode, HttpServletResponse response) throws IOException {
+	private void handleJwtException(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		Exception e,
+		ErrorCode errorCode
+	) throws IOException {
+		log.error("Request URI [{}], Error [{}]: {}",
+			request.getRequestURI(), e.getClass().getSimpleName(), e.getLocalizedMessage());
+
 		response.setStatus(errorCode.getHttpStatus().value());
 		response.setContentType(APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("UTF-8");
-		ErrorCodeDto errorCodeDto = new ErrorCodeDto(errorCode);
-		Response<ErrorCodeDto> error = Response.error(errorCodeDto);
 
 		// 응답 구조를 맞춰주기 위해 ObjectMapper 사용
 		ObjectMapper objectMapper = new ObjectMapper();
-		response.getWriter().write(objectMapper.writeValueAsString(error));
+		ErrorCodeDto errorCodeDto = new ErrorCodeDto(errorCode);
+		Response<ErrorCodeDto> errorResponse = Response.error(errorCodeDto);
+		response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
 	}
 }

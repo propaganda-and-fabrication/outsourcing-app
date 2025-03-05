@@ -81,7 +81,7 @@ public class MenuController {
 		@PathVariable Long menuId,
 		@AuthenticationPrincipal CustomUserDetails currentUser
 	) {
-		
+
 		menuService.deleteMenu(menuId, getOwnerEmail(currentUser));
 		return Response.of(null);
 	}
