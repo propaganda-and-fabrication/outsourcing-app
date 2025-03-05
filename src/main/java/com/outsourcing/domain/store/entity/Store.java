@@ -1,23 +1,18 @@
 package com.outsourcing.domain.store.entity;
 
 import com.outsourcing.common.entity.BaseTime;
+import com.outsourcing.domain.menu.entity.Menu;
 import com.outsourcing.domain.store.enums.StoreStatus;
 import com.outsourcing.domain.user.entity.Owner;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -61,6 +56,9 @@ public class Store extends BaseTime {
 	@Column(nullable = false)
 	private BigDecimal minPrice;
 
+    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+    private List<Menu> menus = new ArrayList<>();
+
     public Store(String storeName, String storeProfileUrl, BigDecimal minPrice) {
         this.storeName = storeName;
         this.storeProfileUrl = storeProfileUrl;
@@ -68,6 +66,7 @@ public class Store extends BaseTime {
     }
 
     public Store (
+            Owner owner,
             String storeName,
             String storeProfileUrl,
             String storeAddress,
@@ -77,6 +76,7 @@ public class Store extends BaseTime {
             BigDecimal minPrice,
             StoreStatus storeStatus
             ) {
+        this.owner = owner;
         this.storeName = storeName;
         this.storeProfileUrl = storeProfileUrl;
         this.storeAddress = storeAddress;
@@ -86,8 +86,6 @@ public class Store extends BaseTime {
         this.minPrice = minPrice;
         this.storeStatus = storeStatus;
     }
-
-    public void setOwner(Owner owner) {this.owner = owner;}
 
     public void updateStoreName(String storeName) {this.storeName = storeName;}
 

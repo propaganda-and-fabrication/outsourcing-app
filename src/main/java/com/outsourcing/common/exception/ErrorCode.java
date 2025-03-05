@@ -47,6 +47,8 @@ public enum ErrorCode {
 	STORE_NOT_FOUND(NOT_FOUND,"가게를 찾을 수 없습니다."),
 	MISSING_STORE_HOURS(BAD_REQUEST, "운영시간은 필수 값입니다."),
 	INVALID_STORE_STATUS(BAD_REQUEST, "유효하지 않은 상태값입니다."),
+	UNAUTHORIZED_STORE(BAD_REQUEST, "자신이 소유한 가게가 아닙니다."),
+	MISSING_MIN_PRICE(BAD_REQUEST, "최소 주문금액이 누락 되었습니다."),
 
 	// 주문 관련 예외
 
