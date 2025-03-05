@@ -38,6 +38,7 @@ public class StoreOwnerService {
                 .orElseThrow(() -> new BaseException(ErrorCode.STORE_NOT_FOUND));
     }
 
+    // 권한 유효성 검증
     private void validateOwner(Long ownerId, Store store) {
         if (!store.getOwner().getId().equals(ownerId)) {
             throw new BaseException(ErrorCode.UNAUTHORIZED_STORE);
