@@ -1,4 +1,4 @@
-package com.outsourcing.common.util.s3;
+package com.outsourcing.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
