@@ -11,7 +11,6 @@ import com.outsourcing.domain.store.dto.response.StoreResponse;
 import com.outsourcing.domain.store.entity.Store;
 import com.outsourcing.domain.store.enums.StoreStatus;
 import com.outsourcing.domain.store.repository.StoreRepository;
-import com.outsourcing.domain.user.dto.request.customer.UpdateProfileUrlRequest;
 import com.outsourcing.domain.user.entity.Owner;
 import com.outsourcing.domain.user.repository.OwnerRepository;
 import lombok.RequiredArgsConstructor;
