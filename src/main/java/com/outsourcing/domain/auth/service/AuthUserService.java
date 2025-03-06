@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthCommonService {
+public class AuthUserService {
 
 	private final JwtTokenProvider tokenProvider;
 	private final RefreshTokenRepository refreshTokenRepository;
