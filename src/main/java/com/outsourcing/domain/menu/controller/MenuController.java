@@ -37,7 +37,7 @@ public class MenuController {
 	}
 
 	// 메뉴 생성
-	@PostMapping("v1/owners/stores/{storeId}/menus")
+	@PostMapping("/v1/owners/stores/{storeId}/menus")
 	public Response<OwnerMenuResponse> createMenu(
 		@AuthenticationPrincipal CustomUserDetails currentUser,
 		@Valid @RequestBody CreateMenuRequest request) {
@@ -47,7 +47,7 @@ public class MenuController {
 	}
 
 	// 메뉴 조회 (고객)
-	@GetMapping("v1/customers/stores/{storeId}/menus")
+	@GetMapping("/v1/customers/stores/{storeId}/menus")
 	public Response<List<CustomerMenuResponse>> getCustomerMenus(
 		@AuthenticationPrincipal CustomUserDetails currentUser,
 		@PathVariable Long storeId
@@ -59,7 +59,7 @@ public class MenuController {
 	}
 
 	// 메뉴 조회 (사장)
-	@GetMapping("v1/owners/stores/{storeId}/menus")
+	@GetMapping("/v1/owners/stores/{storeId}/menus")
 	public Response<List<OwnerMenuResponse>> getOwnerMenus(
 		@AuthenticationPrincipal CustomUserDetails currentUser,
 		@PathVariable Long storeId
@@ -71,7 +71,7 @@ public class MenuController {
 	}
 
 	// 메뉴 수정 (이름, 가격, 내용)
-	@PatchMapping("v1/owners/menus/{menuId}/details")
+	@PatchMapping("/v1/owners/menus/{menuId}/details")
 	public Response<OwnerMenuResponse> updateMenuDetails(
 		@PathVariable Long menuId,
 		@AuthenticationPrincipal CustomUserDetails currentUser,
@@ -82,7 +82,7 @@ public class MenuController {
 	}
 
 	// 메뉴 수정 (상태)
-	@PatchMapping("v1/owners/menus/{menuId}/status")
+	@PatchMapping("/v1/owners/menus/{menuId}/status")
 	public Response<OwnerMenuResponse> updateMenuStatus(
 		@PathVariable Long menuId,
 		@AuthenticationPrincipal CustomUserDetails currentUser,
@@ -93,7 +93,7 @@ public class MenuController {
 	}
 
 	// 메뉴 수정 (이미지)
-	@PatchMapping("v1/owners/menus/{menuId}/imageUrl")
+	@PatchMapping("/v1/owners/menus/{menuId}/imageUrl")
 	public Response<OwnerMenuResponse> updateImageUrl(
 		@PathVariable Long menuId,
 		@AuthenticationPrincipal CustomUserDetails currentUser,
@@ -104,7 +104,7 @@ public class MenuController {
 	}
 
 	// 메뉴 삭제 (soft delete)
-	@DeleteMapping("v1/owners/menus/{menuId}")
+	@DeleteMapping("/v1/owners/menus/{menuId}")
 	public Response<Void> deleteMenu(
 		@PathVariable Long menuId,
 		@AuthenticationPrincipal CustomUserDetails currentUser
