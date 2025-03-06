@@ -56,6 +56,12 @@ public enum ErrorCode {
 	UNAUTHORIZED_ACCESS_TO_ORDER(BAD_REQUEST, "주문자의 정보가 올바르지 않습니다."),
 	MENU_NOT_SELECTED_STORE(BAD_REQUEST, "선택한 매장에 속하지 않는 메뉴입니다."),
 
+	// 리뷰 관련 예외
+	NOT_FOUND_RIVIEW(NOT_FOUND, "리뷰를 찾을 수 없습니다."),
+	REPLY_ALREADY_EXISTS(BAD_REQUEST, "답글이 이미 존재합니다."),
+	NOT_FOUND_REPLY_REVIEW(NOT_FOUND, "리뷰에 대한 답변을 찾을 수 없습니다."),
+	CANNOT_REVIEW(BAD_REQUEST, "배달완료 전에는 리뷰를 작성할 수 없습니다."),
+
 	// 메뉴 관련 예외
 	INVALID_STORE_ACCESS(FORBIDDEN, "해당 가게에 대한 접근 권한이 없습니다."),
 	MENU_NOT_FOUND(NOT_FOUND, "해당 메뉴를 찾을 수 없습니다."),

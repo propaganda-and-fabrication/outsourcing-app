@@ -23,7 +23,6 @@ public class OwnerOrderService {
 
     private final OrderRepository orderRepository;
     private final OwnerRepository ownerRepository;
-    private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
 
     @Transactional

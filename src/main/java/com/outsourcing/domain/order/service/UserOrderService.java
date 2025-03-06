@@ -76,28 +76,24 @@ public class UserOrderService {
 
     @Transactional
     public OrderResponse withdrawOrder(Long userId, Long orderId) {
-        // 1. 유저 정보를 가져온다.
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
-
-        // 2. 주문 정보를 가져온다.
+        // 1. 주문 정보를 가져온다.
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
 
-        // 3. 주문이 해당 사용자의 것인지 확인
+        // 2. 주문이 해당 사용자의 것인지 확인
         if (!order.getUser().getId().equals(userId)) {
             throw new BaseException(ErrorCode.UNAUTHORIZED_ACCESS_TO_ORDER);
         }
 
-        // 4. 주문이 취소 가능한 상태인지 확인 (예: 이미 조리 중이면 취소 불가)
+        // 3. 주문이 취소 가능한 상태인지 확인 (예: 이미 조리 중이면 취소 불가)
         if (order.getStatus() != OrderStatus.ORDER_RECEIVED) {
             throw new BaseException(ErrorCode.CAN_NOT_BE_ORDER);
         }
 
-        // 5. 주문 상태를 취소로 변경
+        // 4. 주문 상태를 취소로 변경
         order.updateStatus(OrderStatus.CANCELED);
 
-        // 6. 변경 사항 저장
+        // 5. 변경 사항 저장
         orderRepository.save(order);
 
         return new OrderResponse(order);

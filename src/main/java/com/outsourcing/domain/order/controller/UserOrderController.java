@@ -2,7 +2,6 @@ package com.outsourcing.domain.order.controller;
 
 import com.outsourcing.common.response.Response;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
-import com.outsourcing.domain.order.dto.OrderRequest;
 import com.outsourcing.domain.order.dto.OrderResponse;
 import com.outsourcing.domain.order.service.UserOrderService;
 import lombok.RequiredArgsConstructor;
