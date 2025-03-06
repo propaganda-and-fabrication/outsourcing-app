@@ -16,10 +16,11 @@ public class UserOrderController {
     private final UserOrderService userOrderService;
 
     // 사장님 또는 손님 주문 취소
-    @PatchMapping("/v1/orders/{orderId}")
+    @PatchMapping("/v1/stores/{storeId}/orders/{orderId}")
     public Response<OrderResponse> cancelOrder(@PathVariable Long orderId,
+                                               @PathVariable Long storeId,
                                                @AuthenticationPrincipal CustomUserDetails user) {
-        OrderResponse response = userOrderService.withdrawOrder(user.getUserInfo().getId(), orderId);
+        OrderResponse response = userOrderService.withdrawOrder(user.getUserInfo().getId(), storeId, orderId);
 
         return Response.of(response);
     }

@@ -75,12 +75,17 @@ public class UserOrderService {
     }
 
     @Transactional
-    public OrderResponse withdrawOrder(Long userId, Long orderId) {
+    public OrderResponse withdrawOrder(Long userId, Long storeId, Long orderId) {
         // 1. 주문 정보를 가져온다.
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
 
-        // 2. 주문이 해당 사용자의 것인지 확인
+        // 2. 가져온 주문 정보와 요청한 가게가 같은지 확인
+        if (!order.getStore().getId().equals(storeId)) {
+            throw new BaseException(ErrorCode.UNAUTHORIZED_STORE);
+        }
+
+        // 3. 주문이 해당 사용자의 것인지 확인
         if (!order.getUser().getId().equals(userId)) {
             throw new BaseException(ErrorCode.UNAUTHORIZED_ACCESS_TO_ORDER);
         }
