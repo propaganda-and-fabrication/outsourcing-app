@@ -23,7 +23,6 @@ public class OwnerOrderService {
 
     private final OrderRepository orderRepository;
     private final OwnerRepository ownerRepository;
-    private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
 
     @Transactional
@@ -52,7 +51,20 @@ public class OwnerOrderService {
     }
 
     @Transactional
-    public OrderResponse startDelivery(Long orderId) {
+    public OrderResponse startDelivery(Long ownerId, Long storeId, Long orderId) {
+        // 1. 사장님의 정보를 가져온다.
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
+        // 2. 가게 정보를 가져온다.
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new BaseException(ErrorCode.STORE_NOT_FOUND));
+
+        // 3. 해당 가게가 사장님의 가게인지 확인.
+        if (!store.getOwner().getId().equals(owner.getId())) {
+            throw new BaseException(ErrorCode.UNAUTHORIZED_STORE);
+        }
+
         // 상태값이 조리중인 주문을 불러옴
         Order order = orderRepository.findByIdAndStatus(orderId, OrderStatus.COOKING);
 
@@ -63,7 +75,21 @@ public class OwnerOrderService {
     }
 
     @Transactional
-    public OrderResponse completeDelivery(Long orderId) {
+    public OrderResponse completeDelivery(Long ownerId, Long storeId, Long orderId) {
+
+        // 1. 사장님의 정보를 가져온다.
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+
+        // 2. 가게 정보를 가져온다.
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new BaseException(ErrorCode.STORE_NOT_FOUND));
+
+        // 3. 해당 가게가 사장님의 가게인지 확인.
+        if (!store.getOwner().getId().equals(owner.getId())) {
+            throw new BaseException(ErrorCode.UNAUTHORIZED_STORE);
+        }
+
         // 상태값이 배달중인 주문을 불러옴
         Order order = orderRepository.findByIdAndStatus(orderId, OrderStatus.DELIVERING);
 
