@@ -80,5 +80,6 @@ public class Menu extends BaseTime {
 
 	public void deleteMenu() {
 		this.deletedAt = LocalDateTime.now();
+		this.status = MenuStatus.DELETED;
 	}
 }
