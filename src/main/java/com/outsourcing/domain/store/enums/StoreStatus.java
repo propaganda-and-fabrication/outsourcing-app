@@ -11,4 +11,13 @@ public enum StoreStatus {
     OPERATIONAL,
     TEMPORARY_CLOSED,
     SHUTDOWN;
+
+    public static boolean isValidStoreStatus(String status) {
+        for (StoreStatus storeStatus: values()) {
+            if (storeStatus.name().equalsIgnoreCase(status)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
