@@ -1,5 +1,6 @@
 package com.outsourcing.domain.order.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.outsourcing.common.entity.BaseTime;
@@ -7,17 +8,7 @@ import com.outsourcing.domain.order.enums.OrderStatus;
 import com.outsourcing.domain.store.entity.Store;
 import com.outsourcing.domain.user.entity.User;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,9 +33,38 @@ public class Order extends BaseTime {
 	private String deliveryAddress;
 
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	private OrderStatus status;
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-	private List<OrderItem> orderItems;
+	@OneToMany(mappedBy = "order", orphanRemoval = true, cascade = CascadeType.ALL)
+	private List<OrderItem> orderItems = new ArrayList<>();
+
+	@Column(nullable = false)
+	private int totalPrice;
+
+	// 주문 생성자 추가
+	public Order(User user, Store store, String deliveryAddress, OrderStatus status) {
+		this.user = user;
+		this.store = store;
+		this.deliveryAddress = deliveryAddress;
+		this.status = status;
+	}
+
+	// 주문 항목 추가 메서드
+	public void addOrderItem(OrderItem orderItem) {
+		this.orderItems.add(orderItem);
+	}
+
+	// 주문 총 가격 계산 메서드
+	public void calculateTotalPrice() {
+		this.totalPrice = orderItems.stream()
+				.mapToInt(OrderItem::getTotalPrice)
+				.sum();
+	}
+
+	// 주문 상태 업데이트 메서드
+	public void updateStatus(OrderStatus newStatus) {
+		this.status = newStatus;
+	}
 
 }

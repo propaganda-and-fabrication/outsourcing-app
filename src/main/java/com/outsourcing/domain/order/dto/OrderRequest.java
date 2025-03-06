@@ -11,8 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderRequest {
-    private Long userId;
     private Long storeId;
-    private List<OrderItem> menuItems;
-
+    private List<OrderItemResponse> menus;
 }

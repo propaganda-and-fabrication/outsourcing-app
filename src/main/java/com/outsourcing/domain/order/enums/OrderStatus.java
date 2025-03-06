@@ -9,5 +9,6 @@ public enum OrderStatus {
     ORDER_RECEIVED,
     COOKING,
     DELIVERING,
-    DELIVERY_COMPLETED
+    DELIVERY_COMPLETED,
+    CANCELED
 }
