@@ -20,7 +20,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/v1/reviews")
+    @PostMapping("/v1/customers/reviews")
     public Response<ReviewResponse> createReview(@AuthenticationPrincipal CustomUserDetails user, @RequestBody ReviewRequest requestDto) {
 
         ReviewResponse response = reviewService.createReview(user.getUserInfo().getId(), requestDto);

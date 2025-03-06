@@ -34,17 +34,23 @@ public class OwnerOrderController {
         return Response.of(response);
     }
 
-    @PatchMapping("/v1/orders/{orderId}/delivery/start")
-    public Response<OrderResponse> deliveryStartOrder(@PathVariable Long orderId) {
+    @PatchMapping("/v1/owners/stores/{storeId}/orders/{orderId}/delivery")
+    public Response<OrderResponse> deliveryStartOrder(@AuthenticationPrincipal CustomUserDetails owner,
+                                                      @PathVariable Long storeId,
+                                                      @PathVariable Long orderId) {
 
-        OrderResponse response = ownerOrderService.startDelivery(orderId);
+        OrderResponse response = ownerOrderService.startDelivery(owner.getUserInfo().getId(),
+                storeId, orderId);
         return Response.of(response);
     }
 
-    @PatchMapping("/v1/orders/{orderId}/delivery/complete")
-    public Response<OrderResponse> deliveryCompleteOrder(@PathVariable Long orderId) {
+    @PatchMapping("/v1/owners/stores/{storeId}/orders/{orderId}/complete")
+    public Response<OrderResponse> deliveryCompleteOrder(@AuthenticationPrincipal CustomUserDetails owner,
+                                                         @PathVariable Long storeId,
+                                                         @PathVariable Long orderId) {
 
-        OrderResponse response = ownerOrderService.completeDelivery(orderId);
+        OrderResponse response = ownerOrderService.completeDelivery(owner.getUserInfo().getId(),
+                storeId, orderId);
         return Response.of(response);
     }
 }
