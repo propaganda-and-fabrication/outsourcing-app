@@ -1,5 +1,6 @@
 package com.outsourcing.domain.user.entity;
 
+import static com.outsourcing.domain.user.enums.UserRole.*;
 import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.GenerationType.*;
 import static jakarta.persistence.InheritanceType.*;
@@ -42,7 +43,6 @@ public class User extends BaseTime {
 	@Column(nullable = false)
 	private String name;
 
-	//TODO: 각 역할에 맞게 기본 이미지 경로 넣어줘야 함
 	private String profileUrl;
 
 	@Column(nullable = false, unique = true)
@@ -60,6 +60,7 @@ public class User extends BaseTime {
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.role = role;
+		this.profileUrl = (role == CUSTOMER) ? "profiles/customer.jpg" : "profiles/owner.png";
 	}
 
 	public void changePassword(String password) {
@@ -72,10 +73,6 @@ public class User extends BaseTime {
 
 	public void changePhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
-	}
-
-	public void deleteUser() {
-		this.deletedAt = LocalDateTime.now();
 	}
 }
 
