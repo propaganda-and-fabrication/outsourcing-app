@@ -24,7 +24,8 @@ public class CustomerOrderController {
         return userOrderService.getUserOrders(user.getUserInfo().getId(), pageable);
     }
 
-
+    
+    // 따로 포인트 컷 적용
     @PostMapping("/v1/customers/orders")
     public Response<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest,
                                                @AuthenticationPrincipal CustomUserDetails user) {
