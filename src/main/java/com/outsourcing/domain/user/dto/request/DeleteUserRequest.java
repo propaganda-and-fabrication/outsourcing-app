@@ -10,4 +10,7 @@ public class DeleteUserRequest {
 
 	@NotBlank
 	private final String password;
+
+	@NotBlank
+	private final String refreshToken;
 }
