@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.outsourcing.common.response.Response;
 import com.outsourcing.domain.auth.dto.request.LogoutRequest;
-import com.outsourcing.domain.auth.service.AuthCommonService;
+import com.outsourcing.domain.auth.service.AuthUserService;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,9 +20,9 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class AuthCommonController {
+public class AuthUserController {
 
-	private final AuthCommonService authCommonService;
+	private final AuthUserService authUserService;
 
 	/* Common Auth API */
 	@PostMapping("/v1/auth/logout")
@@ -32,7 +32,7 @@ public class AuthCommonController {
 		HttpServletRequest httpServletRequest
 	) {
 		String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
-		authCommonService.logout(accessToken, request.getRefreshToken(), currentUser);
+		authUserService.logout(accessToken, request.getRefreshToken(), currentUser);
 		return Response.of(null);
 	}
 }
