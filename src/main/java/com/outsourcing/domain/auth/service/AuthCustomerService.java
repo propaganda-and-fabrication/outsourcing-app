@@ -31,8 +31,13 @@ public class AuthCustomerService {
 	private final AddressRepository addressRepository;
 
 	@Transactional
-	public TokenResponse signUpCustomer(String email, String password, String name, String phoneNumber,
-		String address) {
+	public TokenResponse signUpCustomer(
+		String email,
+		String password,
+		String name,
+		String phoneNumber,
+		String address
+	) {
 		// 이메일 중복 검사
 		if (customerRepository.existsByEmail(email)) {
 			throw new BaseException(EMAIL_DUPLICATED);

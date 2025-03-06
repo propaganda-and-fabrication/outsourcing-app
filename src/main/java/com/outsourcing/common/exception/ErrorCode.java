@@ -42,10 +42,17 @@ public enum ErrorCode {
 	DELETE_ADDRESS_FAILED(BAD_REQUEST, "선택되어 있는 주소는 삭제할 수 없습니다."),
 	ADDRESS_ACCESS_DENIED(FORBIDDEN, "해당 주소에 대한 권한이 없습니다."),
 
+	// 가게 관련 예외
+	MAX_STORE_LIMIT_REACHED(BAD_REQUEST, "운영하는 가게 수가 3개를 초과하였습니다."),
+	STORE_NOT_FOUND(NOT_FOUND,"가게를 찾을 수 없습니다."),
+	MISSING_STORE_HOURS(BAD_REQUEST, "운영시간은 필수 값입니다."),
+	INVALID_STORE_STATUS(BAD_REQUEST, "유효하지 않은 상태값입니다."),
+	UNAUTHORIZED_STORE(BAD_REQUEST, "자신이 소유한 가게가 아닙니다."),
+	MISSING_MIN_PRICE(BAD_REQUEST, "최소 주문금액이 누락 되었습니다."),
+
 	// 주문 관련 예외
 
 	// 메뉴 관련 예외
-	STORE_NOT_FOUND(NOT_FOUND, "가게를 찾을 수 없습니다."),
 	INVALID_STORE_ACCESS(FORBIDDEN, "해당 가게에 대한 접근 권한이 없습니다."),
 	MENU_NOT_FOUND(NOT_FOUND, "해당 메뉴를 찾을 수 없습니다."),
 	MENU_ALREADY_DELETED(NOT_FOUND, "해당 메뉴는 이미 삭제되었습니다."),

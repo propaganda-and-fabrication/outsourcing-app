@@ -31,6 +31,7 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
 		// 만약 이미 그 email을 key값으로 한 refreshToken이 있을 경우, 업데이트를 위해 삭제
+		// 나중에 컨벤션 맞춰서 저장 -> ex(key, value): customer@customer.com:refreshToken, refreshTokenValue
 		if (valueOperations.get(refreshToken.getEmail()) != null) {
 			redisTemplate.delete(refreshToken.getEmail());
 		}
@@ -55,7 +56,7 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
 	}
 
 	@Override
-	public String getKey(String email) {
+	public String getValueByKey(String email) {
 		return redisTemplate.opsForValue().get(email);
 	}
 
