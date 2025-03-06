@@ -189,8 +189,8 @@ public class CustomerService {
 		RefreshToken refreshToken = refreshTokenRepository.findByEmail(email)
 			.orElseThrow(() -> new BaseException(INVALID_TOKEN));
 
-		if (refreshTokenRepository.getKey(email) != null && tokenProvider.getSubject(refreshToken.getRefreshToken())
-			.equals(email)) {
+		if (refreshTokenRepository.getValueByKey(email) != null
+			&& tokenProvider.getSubject(refreshToken.getRefreshToken()).equals(email)) {
 			refreshTokenRepository.delete(email);
 		}
 

@@ -12,7 +12,7 @@ public interface RefreshTokenRepository {
 
 	void delete(String email);
 
-	String getKey(String email);
+	String getValueByKey(String email);
 
 	void addBlacklist(String accessToken, long expiration);
 }

@@ -28,7 +28,8 @@ public class AuthCommonService {
 
 		String email = currentUser.getUsername();
 		// redis에 로그인 한 유저의 refreshToken이 null이 아니고, refreshToken의 email이 로그인한 유저의 이메일과 동일하면 삭제
-		if (refreshTokenRepository.getKey(email) != null && tokenProvider.getSubject(refreshToken).equals(email)) {
+		if (refreshTokenRepository.getValueByKey(email) != null
+			&& tokenProvider.getSubject(refreshToken).equals(email)) {
 			refreshTokenRepository.delete(email);
 		}
 

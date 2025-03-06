@@ -24,7 +24,6 @@ public class Owner extends User {
 	@Column(nullable = false, updatable = false)
 	private String constantNickname;
 
-	//TODO: Owner는 프로필 이미지가 바뀌면 안됨
 	public Owner(String email, String password, String name, String phoneNumber,
 		UserRole role) {
 		super(email, password, name, phoneNumber, role);
