@@ -1,7 +1,5 @@
 package com.outsourcing.domain.user.controller;
 
-import static com.outsourcing.common.constant.Const.*;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.outsourcing.common.response.Response;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
-import com.outsourcing.domain.user.dto.request.DeleteUserRequest;
 import com.outsourcing.domain.user.dto.request.UpdatePasswordRequest;
 import com.outsourcing.domain.user.dto.request.UpdatePhoneNumberRequest;
 import com.outsourcing.domain.user.dto.request.customer.AddAddressRequest;
@@ -25,7 +22,6 @@ import com.outsourcing.domain.user.dto.response.CustomerResponse;
 import com.outsourcing.domain.user.dto.response.GetAllAddressResponse;
 import com.outsourcing.domain.user.service.CustomerService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -72,23 +68,12 @@ public class CustomerController {
 	}
 
 	@PatchMapping("/v1/customers/me/profile-image")
-	public Response<CustomerResponse> updateCustomerProfileUrl(
+	public Response<CustomerResponse> updateProfileUrl(
 		@Valid @RequestBody UpdateProfileUrlRequest request,
 		@AuthenticationPrincipal CustomUserDetails currentUser
 	) {
 		CustomerResponse response = customerService.updateCustomerProfileUrl(request.getNewProfileUrl(), currentUser);
 		return Response.of(response);
-	}
-
-	@PostMapping("/v1/customers/me/delete")
-	public Response<Void> deleteCustomer(
-		@Valid @RequestBody DeleteUserRequest request,
-		@AuthenticationPrincipal CustomUserDetails currentUser,
-		HttpServletRequest httpServletRequest
-	) {
-		String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
-		customerService.deleteCustomer(request.getPassword(), accessToken, request.getRefreshToken(), currentUser);
-		return Response.of(null);
 	}
 
 	/* Address API */

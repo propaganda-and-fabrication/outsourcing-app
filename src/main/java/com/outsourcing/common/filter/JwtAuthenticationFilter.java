@@ -1,5 +1,6 @@
 package com.outsourcing.common.filter;
 
+import static com.outsourcing.common.constant.Const.*;
 import static com.outsourcing.common.exception.ErrorCode.*;
 import static java.lang.Boolean.*;
 import static org.springframework.http.MediaType.*;
@@ -44,14 +45,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	) throws ServletException, IOException {
 
 		// Header에 토큰이 존재하는지 확인하고 없으면 바로 다음 필터로 보냄
-		String accessTokenWithBearer = request.getHeader("Authorization");
-		if (accessTokenWithBearer == null || !accessTokenWithBearer.startsWith("Bearer ")) {
+		String accessTokenWithBearer = request.getHeader(AUTHORIZATION);
+		if (accessTokenWithBearer == null || !accessTokenWithBearer.startsWith(BEARER_PREFIX)) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 
 		try {
-			Boolean isBlacklisted = redisTemplate.hasKey("blacklist:" + accessTokenWithBearer);
+			Boolean isBlacklisted = redisTemplate.hasKey(BLACKLIST + accessTokenWithBearer);
 			if (TRUE.equals(isBlacklisted)) {
 				throw new BaseException(MISSING_AUTHENTICATION_INFORMATION);
 			}

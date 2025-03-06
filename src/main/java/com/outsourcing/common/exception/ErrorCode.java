@@ -44,13 +44,17 @@ public enum ErrorCode {
 
 	// 가게 관련 예외
 	MAX_STORE_LIMIT_REACHED(BAD_REQUEST, "운영하는 가게 수가 3개를 초과하였습니다."),
-	STORE_NOT_FOUND(NOT_FOUND,"가게를 찾을 수 없습니다."),
+	STORE_NOT_FOUND(NOT_FOUND, "가게를 찾을 수 없습니다."),
 	MISSING_STORE_HOURS(BAD_REQUEST, "운영시간은 필수 값입니다."),
 	INVALID_STORE_STATUS(BAD_REQUEST, "유효하지 않은 상태값입니다."),
 	UNAUTHORIZED_STORE(BAD_REQUEST, "자신이 소유한 가게가 아닙니다."),
 	MISSING_MIN_PRICE(BAD_REQUEST, "최소 주문금액이 누락 되었습니다."),
 
 	// 주문 관련 예외
+	CAN_NOT_BE_ORDER(BAD_REQUEST, "주문 취소가 불가능 합니다."),
+	ORDER_NOT_FOUND(NOT_FOUND, "주문 정보를 찾을 수 없습니다."),
+	UNAUTHORIZED_ACCESS_TO_ORDER(BAD_REQUEST, "주문자의 정보가 올바르지 않습니다."),
+	MENU_NOT_SELECTED_STORE(BAD_REQUEST, "선택한 매장에 속하지 않는 메뉴입니다."),
 
 	// 메뉴 관련 예외
 	INVALID_STORE_ACCESS(FORBIDDEN, "해당 가게에 대한 접근 권한이 없습니다."),
@@ -65,6 +69,7 @@ public enum ErrorCode {
 	UPLOAD_ACCESS_DENIED(FORBIDDEN, "해당 위치에 파일을 저장할 권한이 없습니다."),
 	FILE_RESIZE_ERROR(INTERNAL_SERVER_ERROR, "파일 리사이징 중 예외가 발생했습니다."),
 	INVALID_UPLOAD_TYPE(BAD_REQUEST, "해당 타입은 다중 이미지 업로드를 할 수 없습니다."),
+	FILE_UPLOAD_LIMIT_EXCEEDED(BAD_REQUEST, "최대 파일 업로드 개수를 초과했습니다."),
 
 	// 기타 예외
 	TYPE_MISMATCH(BAD_REQUEST, "잘못된 타입입니다."),

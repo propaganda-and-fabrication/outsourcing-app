@@ -1,4 +1,4 @@
-package com.outsourcing.domain.auth.controller;
+package com.outsourcing.domain.user.controller;
 
 import static com.outsourcing.common.constant.Const.*;
 
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.outsourcing.common.response.Response;
-import com.outsourcing.domain.auth.dto.request.LogoutRequest;
-import com.outsourcing.domain.auth.service.AuthCommonService;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
+import com.outsourcing.domain.user.dto.request.DeleteUserRequest;
+import com.outsourcing.domain.user.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -20,19 +20,18 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class AuthCommonController {
+public class UserController {
 
-	private final AuthCommonService authCommonService;
+	private final UserService userService;
 
-	/* Common Auth API */
-	@PostMapping("/v1/auth/logout")
-	public Response<Void> logout(
-		@Valid @RequestBody LogoutRequest request,
+	@PostMapping("/v1/users")
+	public Response<Void> deleteUser(
+		@Valid @RequestBody DeleteUserRequest request,
 		@AuthenticationPrincipal CustomUserDetails currentUser,
 		HttpServletRequest httpServletRequest
 	) {
 		String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
-		authCommonService.logout(accessToken, request.getRefreshToken(), currentUser);
+		userService.deleteUser(request.getPassword(), accessToken, request.getRefreshToken(), currentUser);
 		return Response.of(null);
 	}
 }

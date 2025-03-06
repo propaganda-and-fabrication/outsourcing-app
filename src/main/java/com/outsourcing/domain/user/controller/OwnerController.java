@@ -1,24 +1,19 @@
 package com.outsourcing.domain.user.controller;
 
-import static com.outsourcing.common.constant.Const.*;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.outsourcing.common.response.Response;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
-import com.outsourcing.domain.user.dto.request.DeleteUserRequest;
 import com.outsourcing.domain.user.dto.request.UpdatePasswordRequest;
 import com.outsourcing.domain.user.dto.request.UpdatePhoneNumberRequest;
 import com.outsourcing.domain.user.dto.response.OwnerResponse;
 import com.outsourcing.domain.user.service.OwnerService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -50,19 +45,8 @@ public class OwnerController {
 		@Valid @RequestBody UpdatePasswordRequest request,
 		@AuthenticationPrincipal CustomUserDetails currentUser
 	) {
-		OwnerResponse response = ownerService.updatePassword(request.getOldPassword(),
-			request.getNewPassword(), currentUser);
+		OwnerResponse response =
+			ownerService.updatePassword(request.getOldPassword(), request.getNewPassword(), currentUser);
 		return Response.of(response);
-	}
-
-	@PostMapping("/v1/owners/me/delete")
-	public Response<Void> deleteOwner(
-		@Valid @RequestBody DeleteUserRequest request,
-		@AuthenticationPrincipal CustomUserDetails currentUser,
-		HttpServletRequest httpServletRequest
-	) {
-		String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
-		ownerService.deleteOwner(request.getPassword(), accessToken, request.getRefreshToken(), currentUser);
-		return Response.of(null);
 	}
 }
