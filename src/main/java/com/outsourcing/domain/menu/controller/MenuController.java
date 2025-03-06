@@ -71,7 +71,7 @@ public class MenuController {
 	}
 
 	// 메뉴 수정 (이름, 가격, 내용)
-	@PatchMapping("/v1/owners/stores/{storeId}/menus/{menuId}/details")
+	@PatchMapping("/v1/owners/stores/{storeId}/menus/{menuId}")
 	public Response<OwnerMenuResponse> updateMenuDetails(
 		@PathVariable Long storeId,
 		@PathVariable Long menuId,
@@ -96,7 +96,7 @@ public class MenuController {
 	}
 
 	// 메뉴 수정 (이미지)
-	@PatchMapping("/v1/owners/stores/{storeId}/menus/{menuId}/imageUrl")
+	@PatchMapping("/v1/owners/stores/{storeId}/menus/{menuId}/imageurl")
 	public Response<OwnerMenuResponse> updateImageUrl(
 		@PathVariable Long storeId,
 		@PathVariable Long menuId,

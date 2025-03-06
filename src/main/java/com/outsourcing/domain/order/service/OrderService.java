@@ -25,6 +25,5 @@ public class OrderService {
 			.orElseThrow(() -> new IllegalArgumentException("user not found"));
 
 		// 가게 정보
-		return null;
 	}
 }
