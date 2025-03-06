@@ -50,13 +50,12 @@ public class CustomerService {
 
 	@Transactional
 	public CustomerResponse updatePhoneNumber(String newPhoneNumber, CustomUserDetails currentUser) {
-		Customer getCustomer = getCustomerOrElseThrow(currentUser.getUsername());
-
 		// 휴대폰 번호가 이미 존재함
 		if (customerRepository.existsByPhoneNumber(newPhoneNumber)) {
 			throw new BaseException(PHONE_NUMBER_DUPLICATED);
 		}
 
+		Customer getCustomer = getCustomerOrElseThrow(currentUser.getUsername());
 		// 이전 전화번호와 바꾸려는 전화번호가 동일
 		if (getCustomer.getPhoneNumber().equals(newPhoneNumber)) {
 			throw new BaseException(PHONE_NUMBER_SAME_AS_OLD);
