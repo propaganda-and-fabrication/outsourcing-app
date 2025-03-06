@@ -40,7 +40,7 @@ public class OwnerService {
 			throw new BaseException(PHONE_NUMBER_DUPLICATED);
 		}
 
-		// 휴대폰 번호가 이미 존재함
+		// 휴대폰 번호 이전과 동일함
 		if (getOwner.getPhoneNumber().equals(newPhoneNumber)) {
 			throw new BaseException(PHONE_NUMBER_SAME_AS_OLD);
 		}
