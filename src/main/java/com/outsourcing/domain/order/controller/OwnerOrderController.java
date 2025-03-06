@@ -5,11 +5,10 @@ import com.outsourcing.domain.auth.service.CustomUserDetails;
 import com.outsourcing.domain.order.dto.OrderResponse;
 import com.outsourcing.domain.order.service.OwnerOrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -19,9 +18,13 @@ public class OwnerOrderController {
     private final OwnerOrderService ownerOrderService;
 
     // 지금 까지 받은 가게 주문 현황
+    @GetMapping("/v1/owners/stores/{storeId}/orders")
+    public Page<OrderResponse> getStoreOrders(@AuthenticationPrincipal CustomUserDetails owner, @PathVariable Long storeId, Pageable pageable) {
+        return ownerOrderService.getStoreOrders(owner.getUserInfo().getId(), storeId, pageable);
+    }
 
 
-    @PatchMapping("/v1/stores/{storeId}/orders/{orderId}")
+    @PatchMapping("/v1/owners/stores/{storeId}/orders/{orderId}")
     public Response<OrderResponse> cookingOrder(@AuthenticationPrincipal CustomUserDetails owner,
                                                 @PathVariable Long storeId,
                                                 @PathVariable Long orderId) {

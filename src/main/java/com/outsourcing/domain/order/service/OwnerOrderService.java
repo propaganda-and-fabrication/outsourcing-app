@@ -1,5 +1,7 @@
 package com.outsourcing.domain.order.service;
 
+import com.outsourcing.common.exception.BaseException;
+import com.outsourcing.common.exception.ErrorCode;
 import com.outsourcing.domain.menu.repository.MenuRepository;
 import com.outsourcing.domain.order.dto.OrderResponse;
 import com.outsourcing.domain.order.entity.Order;
@@ -13,6 +15,8 @@ import com.outsourcing.domain.user.repository.OwnerRepository;
 import com.outsourcing.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,15 +32,15 @@ public class OwnerOrderService {
     public OrderResponse cookingOrder(Long ownerId, Long storeId, Long orderId) {
         // 1. 사장님의 정보를 가져온다.
         Owner owner = ownerRepository.findById(ownerId)
-                .orElseThrow(() -> new IllegalArgumentException("Owner not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 가게 정보를 가져온다.
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("Store not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.STORE_NOT_FOUND));
 
         // 3. 해당 가게가 사장님의 가게인지 확인.
         if (!store.getOwner().getId().equals(owner.getId())) {
-            throw new IllegalArgumentException("This store does not belong to the owner");
+            throw new BaseException(ErrorCode.STORE_ID_AND_OWNER_ID_DIFFERENT);
         }
 
         // 4. 상태값이 주문접수인 정보를 가져온다.
@@ -69,5 +73,19 @@ public class OwnerOrderService {
         orderRepository.save(order);  // 상태 업데이트
 
         return new OrderResponse(order);
+    }
+
+    @Transactional
+    public Page<OrderResponse> getStoreOrders(Long ownerId, Long storeId, Pageable pageable) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("Store not found"));
+
+        // 해당 가게가 ownerId의 가게인지 검증
+        if (!store.getOwner().getId().equals(ownerId)) {
+            throw new BaseException(ErrorCode.STORE_ID_AND_OWNER_ID_DIFFERENT);
+        }
+
+        return orderRepository.findByStoreId(storeId, pageable)
+                .map(OrderResponse::new);
     }
 }

@@ -1,5 +1,7 @@
 package com.outsourcing.domain.order.service;
 
+import com.outsourcing.common.exception.BaseException;
+import com.outsourcing.common.exception.ErrorCode;
 import com.outsourcing.domain.menu.entity.Menu;
 import com.outsourcing.domain.menu.repository.MenuRepository;
 import com.outsourcing.domain.order.dto.OrderItemResponse;
@@ -17,6 +19,8 @@ import com.outsourcing.domain.user.repository.AddressRepository;
 import com.outsourcing.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,13 +37,13 @@ public class UserOrderService {
     public OrderResponse createOrder(Long userId, Long storeId, List<OrderItemResponse> menus) {
         // 1. 사용자 및 가게 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("Store not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.STORE_NOT_FOUND));
 
         // 2. 사용자 기본 배송지 조회
         AddressDto userAddress = addressRepository.findAddressByCustomer_IdAndStatus(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Address not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.ADDRESS_NOT_FOUND));
 
         // 3. 주문 생성
         Order order = new Order(user, store, userAddress.getAddress(), OrderStatus.ORDER_RECEIVED);
@@ -48,10 +52,11 @@ public class UserOrderService {
         List<OrderItem> orderItems = menus.stream()
                 .map(dto -> {
                     Menu menu = menuRepository.findById(dto.getMenuId())
-                            .orElseThrow(() -> new IllegalArgumentException("Menu not found"));
+                            .orElseThrow(() -> new BaseException(ErrorCode.MENU_NOT_FOUND));
+
                     // 주문한 가게와 메뉴의 가게가 일치하는지 확인.
                     if (!menu.getStore().getId().equals(storeId)) {
-                        throw new IllegalArgumentException("Menu does not belong to the selected store");
+                        throw new BaseException(ErrorCode.MENU_NOT_SELECTED_STORE);
                     }
 
                     return new OrderItem(order, menu, dto.getQuantity());
@@ -72,20 +77,20 @@ public class UserOrderService {
     public OrderResponse withdrawOrder(Long userId, Long orderId) {
         // 1. 유저 정보를 가져온다.
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 주문 정보를 가져온다.
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
 
         // 3. 주문이 해당 사용자의 것인지 확인
         if (!order.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("Unauthorized access to order");
+            throw new BaseException(ErrorCode.UNAUTHORIZED_ACCESS_TO_ORDER);
         }
 
         // 4. 주문이 취소 가능한 상태인지 확인 (예: 이미 조리 중이면 취소 불가)
         if (order.getStatus() != OrderStatus.ORDER_RECEIVED) {
-            throw new IllegalStateException("Order cannot be canceled");
+            throw new BaseException(ErrorCode.CAN_NOT_BE_ORDER);
         }
 
         // 5. 주문 상태를 취소로 변경
@@ -95,5 +100,11 @@ public class UserOrderService {
         orderRepository.save(order);
 
         return new OrderResponse(order);
+    }
+
+    @Transactional
+    public Page<OrderResponse> getUserOrders(Long userId, Pageable pageable) {
+        return orderRepository.findByUserId(userId, pageable)
+                .map(OrderResponse::new);
     }
 }

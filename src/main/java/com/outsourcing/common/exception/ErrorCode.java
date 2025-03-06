@@ -49,8 +49,13 @@ public enum ErrorCode {
 	INVALID_STORE_STATUS(BAD_REQUEST, "유효하지 않은 상태값입니다."),
 	UNAUTHORIZED_STORE(BAD_REQUEST, "자신이 소유한 가게가 아닙니다."),
 	MISSING_MIN_PRICE(BAD_REQUEST, "최소 주문금액이 누락 되었습니다."),
+	STORE_ID_AND_OWNER_ID_DIFFERENT(BAD_REQUEST, "주인이 다른 가게입니다."),
 
 	// 주문 관련 예외
+	CAN_NOT_BE_ORDER(BAD_REQUEST, "주문 취소가 불가능 합니다."),
+	ORDER_NOT_FOUND(NOT_FOUND, "주문 정보를 찾을 수 없습니다."),
+	UNAUTHORIZED_ACCESS_TO_ORDER(BAD_REQUEST, "주문자의 정보가 올바르지 않습니다."),
+	MENU_NOT_SELECTED_STORE(BAD_REQUEST, "선택한 매장에 속하지 않는 메뉴입니다."),
 
 	// 메뉴 관련 예외
 	INVALID_STORE_ACCESS(FORBIDDEN, "해당 가게에 대한 접근 권한이 없습니다."),
