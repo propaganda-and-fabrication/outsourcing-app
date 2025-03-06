@@ -9,7 +9,6 @@ import static org.mockito.BDDMockito.*;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,16 +42,6 @@ class CustomerServiceTest {
 
 	@InjectMocks
 	CustomerService customerService;
-
-	@BeforeEach
-	void beforeEach() {
-		Customer mockCustomer = new Customer("a@a.com", "password", "name", "000", CUSTOMER);
-		ReflectionTestUtils.setField(mockCustomer, "id", 1L);
-		CustomUserDetails userDetails = new CustomUserDetails(
-			new UserInfo(mockCustomer.getId(), mockCustomer.getEmail(), mockCustomer.getPassword(),
-				mockCustomer.getRole(), mockCustomer.getDeletedAt()));
-		Address mockAddress = Address.from("address", ACTIVE, mockCustomer);
-	}
 
 	@Test
 	public void Customer_프로필_조회_성공() {
