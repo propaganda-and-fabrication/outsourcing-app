@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.EnumType.STRING;
@@ -54,9 +55,6 @@ public class Store extends BaseTime {
 
 	@Column(nullable = false)
 	private BigDecimal minPrice;
-
-    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Menu> menus;
 
     public Store(String storeName, String storeProfileUrl, BigDecimal minPrice) {
         this.storeName = storeName;

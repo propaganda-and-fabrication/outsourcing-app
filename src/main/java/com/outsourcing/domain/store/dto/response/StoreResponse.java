@@ -1,5 +1,6 @@
 package com.outsourcing.domain.store.dto.response;
 
+import com.outsourcing.domain.menu.dto.response.MenuResponse;
 import com.outsourcing.domain.menu.entity.Menu;
 import com.outsourcing.domain.store.entity.Store;
 import lombok.Getter;
@@ -22,9 +23,9 @@ public class StoreResponse {
     private final LocalTime openedAt;
     private final LocalTime closedAt;
     private final BigDecimal minPrice;
-    private final List<Menu> menus;
+    private final List<MenuResponse> menus;
 
-    public static StoreResponse of(Store store, List<Menu> menus) {
+    public static StoreResponse of(Store store, List<MenuResponse> menus) {
         return new StoreResponse(
                 store.getId(),
                 store.getStoreName(),

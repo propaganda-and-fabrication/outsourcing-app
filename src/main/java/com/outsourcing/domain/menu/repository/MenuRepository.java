@@ -7,5 +7,5 @@ import com.outsourcing.domain.menu.entity.Menu;
 import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
-    List<Menu> findByStoreId(Long storeId);
+    List<Menu> findAllByStoreId(Long storeId);
 }

@@ -16,7 +16,4 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query("SELECT s FROM Store s WHERE s.owner.id = :ownerId")
     List<Store> findByOwnerId(@Param("ownerId") Long ownerId);
-
-    @Query("SELECT s FROM Store s LEFT JOIN FETCH s.menus WHERE s.id = :storeId")
-    Store findByIdWithMenus(@Param("storeId") Long storeId);
 }

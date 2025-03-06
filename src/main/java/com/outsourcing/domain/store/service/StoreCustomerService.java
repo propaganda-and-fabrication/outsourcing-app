@@ -2,6 +2,7 @@ package com.outsourcing.domain.store.service;
 
 import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.common.exception.ErrorCode;
+import com.outsourcing.domain.menu.dto.response.MenuResponse;
 import com.outsourcing.domain.menu.entity.Menu;
 import com.outsourcing.domain.menu.repository.MenuRepository;
 import com.outsourcing.domain.store.dto.response.StoreCustomerResponse;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -53,7 +55,16 @@ public class StoreCustomerService {
         if (!store.getStoreStatus().equals(StoreStatus.OPERATIONAL)) {
             throw new BaseException(ErrorCode.STORE_NOT_FOUND);
         }
-        List<Menu> menus = menuRepository.findByStoreId(storeId);
-        return StoreResponse.of(store,menus);
+        List<Menu> menus = menuRepository.findAllByStoreId(storeId);
+        List<MenuResponse> dtos = new ArrayList<>();
+        for (Menu menu : menus) {
+            dtos.add(new MenuResponse(
+                    menu.getId(),
+                    menu.getName(),
+                    menu.getPrice(),
+                    menu.getDescription(),
+                    menu.getImageUrl()));
+        }
+        return StoreResponse.of(store,dtos);
     }
 }

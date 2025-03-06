@@ -2,6 +2,7 @@ package com.outsourcing.domain.store.service;
 
 import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.common.exception.ErrorCode;
+import com.outsourcing.domain.menu.dto.response.MenuResponse;
 import com.outsourcing.domain.menu.entity.Menu;
 import com.outsourcing.domain.menu.repository.MenuRepository;
 import com.outsourcing.domain.store.dto.request.*;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -91,12 +93,21 @@ public class StoreOwnerService {
     @Transactional(readOnly = true)
     public StoreResponse getStore(Long ownerId, Long storeId) {
 
-        Store store = storeRepository.findByIdWithMenus(storeId);
+        Store store = getStoreById(storeId);
 
         validateOwner(ownerId,store);
 
-        List<Menu> menus = menuRepository.findByStoreId(storeId);
-        return StoreResponse.of(store,menus);
+        List<Menu> menus = menuRepository.findAllByStoreId(storeId);
+        List<MenuResponse> dtos = new ArrayList<>();
+        for (Menu menu : menus) {
+            dtos.add(new MenuResponse(
+                    menu.getId(),
+                    menu.getName(),
+                    menu.getPrice(),
+                    menu.getDescription(),
+                    menu.getImageUrl()));
+        }
+        return StoreResponse.of(store,dtos);
     }
 
     //가게 이름 수정
