@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomerResponse {
 
+	private final Long id;
 	private final String name;
 	private final String nickname;
 	private final String email;
@@ -17,6 +18,7 @@ public class CustomerResponse {
 
 	public static CustomerResponse of(Customer customer) {
 		return new CustomerResponse(
+			customer.getId(),
 			customer.getName(),
 			customer.getNickname(),
 			customer.getEmail(),
