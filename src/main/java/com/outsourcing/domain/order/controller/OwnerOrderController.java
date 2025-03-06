@@ -1,10 +1,13 @@
 package com.outsourcing.domain.order.controller;
 
+import com.outsourcing.common.annotation.LogTrace;
 import com.outsourcing.common.response.Response;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
 import com.outsourcing.domain.order.dto.OrderResponse;
 import com.outsourcing.domain.order.service.OwnerOrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +27,7 @@ public class OwnerOrderController {
     }
 
 
+    @LogTrace
     @PatchMapping("/v1/owners/stores/{storeId}/orders/{orderId}")
     public Response<OrderResponse> cookingOrder(@AuthenticationPrincipal CustomUserDetails owner,
                                                 @PathVariable Long storeId,
@@ -34,6 +38,7 @@ public class OwnerOrderController {
         return Response.of(response);
     }
 
+    @LogTrace
     @PatchMapping("/v1/owners/stores/{storeId}/orders/{orderId}/delivery")
     public Response<OrderResponse> deliveryStartOrder(@AuthenticationPrincipal CustomUserDetails owner,
                                                       @PathVariable Long storeId,
@@ -44,6 +49,7 @@ public class OwnerOrderController {
         return Response.of(response);
     }
 
+    @LogTrace
     @PatchMapping("/v1/owners/stores/{storeId}/orders/{orderId}/complete")
     public Response<OrderResponse> deliveryCompleteOrder(@AuthenticationPrincipal CustomUserDetails owner,
                                                          @PathVariable Long storeId,
