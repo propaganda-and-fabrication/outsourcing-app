@@ -1,5 +1,6 @@
 package com.outsourcing.common.util.jwt;
 
+import static com.outsourcing.common.constant.Const.*;
 import static com.outsourcing.common.exception.ErrorCode.*;
 import static io.jsonwebtoken.Jwts.SIG.*;
 import static io.jsonwebtoken.io.Decoders.*;
@@ -29,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-	private static final String BEARER_PREFIX = "Bearer ";
 	private final CustomUserDetailsService userDetailsService;
 	private SecretKey key;
 	@Value("${jwt.secret.expiration}")

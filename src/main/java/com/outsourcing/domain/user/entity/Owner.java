@@ -23,8 +23,7 @@ public class Owner extends User {
 	@Column(nullable = false, updatable = false)
 	private String constantNickname;
 
-	public Owner(String email, String password, String name, String phoneNumber,
-		UserRole role) {
+	public Owner(String email, String password, String name, String phoneNumber, UserRole role) {
 		super(email, password, name, phoneNumber, role);
 		this.constantNickname = "사장님";
 	}

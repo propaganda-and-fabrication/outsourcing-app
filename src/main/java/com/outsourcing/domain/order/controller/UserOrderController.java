@@ -16,7 +16,7 @@ public class UserOrderController {
 
     private final UserOrderService userOrderService;
 
-    @PostMapping("/v1/order")
+    @PostMapping("/v1/customers/order")
     public Response<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest,
                                                      @AuthenticationPrincipal CustomUserDetails user) {
         OrderResponse response = userOrderService.createOrder(user.getUserInfo().getId(),
@@ -25,7 +25,9 @@ public class UserOrderController {
         return Response.of(response);
     }
 
-    @PatchMapping("/v1/orders/{orderId}/cancel")
+    // 주문 전체내역 확인
+
+    @PatchMapping("/v1/orders/{orderId}")
     public Response<OrderResponse> cancelOrder(@PathVariable Long orderId,
                                                @AuthenticationPrincipal CustomUserDetails user) {
         OrderResponse response = userOrderService.withdrawOrder(user.getUserInfo().getId(), orderId);

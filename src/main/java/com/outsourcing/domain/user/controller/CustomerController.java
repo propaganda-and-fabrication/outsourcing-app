@@ -72,7 +72,7 @@ public class CustomerController {
 	}
 
 	@PatchMapping("/v1/customers/me/profile-image")
-	public Response<CustomerResponse> updateCustomerProfileUrl(
+	public Response<CustomerResponse> updateProfileUrl(
 		@Valid @RequestBody UpdateProfileUrlRequest request,
 		@AuthenticationPrincipal CustomUserDetails currentUser
 	) {

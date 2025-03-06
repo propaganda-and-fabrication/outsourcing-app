@@ -18,7 +18,10 @@ public class OwnerOrderController {
 
     private final OwnerOrderService ownerOrderService;
 
-    @PatchMapping("/v1/{storeId}/orders/{orderId}")
+    // 지금 까지 받은 가게 주문 현황
+
+
+    @PatchMapping("/v1/stores/{storeId}/orders/{orderId}")
     public Response<OrderResponse> cookingOrder(@AuthenticationPrincipal CustomUserDetails owner,
                                                 @PathVariable Long storeId,
                                                 @PathVariable Long orderId) {
@@ -28,14 +31,14 @@ public class OwnerOrderController {
         return Response.of(response);
     }
 
-    @PatchMapping("/v1/start/delivery")
+    @PatchMapping("/v1/delivery/start")
     public Response<OrderResponse> deliveryStartOrder(@AuthenticationPrincipal CustomUserDetails owner) {
 
         OrderResponse response = ownerOrderService.startDelivery(owner.getUserInfo().getId());
         return Response.of(response);
     }
 
-    @PatchMapping("/v1/complete/delivery")
+    @PatchMapping("/v1/delivery/complete")
     public Response<OrderResponse> deliveryCompleteOrder(@AuthenticationPrincipal CustomUserDetails owner) {
 
         OrderResponse response = ownerOrderService.completeDelivery(owner.getUserInfo().getId());
