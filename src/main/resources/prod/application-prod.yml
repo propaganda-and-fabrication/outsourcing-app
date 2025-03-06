@@ -1,9 +1,6 @@
 spring:
   config:
     import:
-      - classpath:/local/application-datasource.yml
-      - classpath:/local/application-logging.yml
-
-jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
+      - classpath:/prod/application-datasource.yml
+      - classpath:/prod/application-logging.yml
+      - classpath:/prod/application-secret.yml
