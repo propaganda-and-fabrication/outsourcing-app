@@ -27,11 +27,13 @@ public class AuthCommonService {
 		}
 
 		String email = currentUser.getUsername();
-		// redis에 로그인 한 유저의 refreshToken이 null이 아니고, refreshToken의 email이 로그인한 유저의 이메일과 동일하면 삭제
-		if (refreshTokenRepository.getValueByKey(email) != null
-			&& tokenProvider.getSubject(refreshToken).equals(email)) {
-			refreshTokenRepository.delete(email);
+		// redis에 저장된 refreshToken과 요청 본문으로 받은 refreshToken의 값이 다르거나 
+		// refreshToken의 subject와 로그인한 유저의 이메일이 다를 경우 예외 발생
+		if (!refreshTokenRepository.getValueByKey(email).equals(refreshToken)
+			|| !tokenProvider.getSubject(refreshToken).equals(email)) {
+			throw new BaseException(INVALID_TOKEN);
 		}
+		refreshTokenRepository.delete(email);
 
 		long expiration = tokenProvider.extractClaims(accessTokenWithoutBearer).getExpiration().getTime();
 

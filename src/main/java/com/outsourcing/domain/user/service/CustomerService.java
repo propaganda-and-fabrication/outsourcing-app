@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.outsourcing.common.exception.BaseException;
 import com.outsourcing.common.util.jwt.JwtTokenProvider;
-import com.outsourcing.domain.auth.entity.RefreshToken;
 import com.outsourcing.domain.auth.repository.RefreshTokenRepository;
 import com.outsourcing.domain.auth.service.CustomUserDetails;
 import com.outsourcing.domain.user.dto.response.CustomerResponse;
@@ -54,9 +53,83 @@ public class CustomerService {
 	}
 
 	@Transactional
+	public CustomerResponse updatePhoneNumber(String newPhoneNumber, CustomUserDetails currentUser) {
+		Customer getCustomer = getCustomerOrElseThrow(currentUser.getUsername());
+
+		// 휴대폰 번호가 이미 존재함
+		if (customerRepository.existsByPhoneNumber(newPhoneNumber)) {
+			throw new BaseException(PHONE_NUMBER_DUPLICATED);
+		}
+
+		// 이전 전화번호와 바꾸려는 전화번호가 동일
+		if (getCustomer.getPhoneNumber().equals(newPhoneNumber)) {
+			throw new BaseException(PHONE_NUMBER_SAME_AS_OLD);
+		}
+
+		getCustomer.changePhoneNumber(newPhoneNumber);
+
+		return CustomerResponse.of(getCustomer);
+	}
+
+	@Transactional
+	public CustomerResponse updatePassword(String oldPassword, String newPassword, CustomUserDetails currentUser) {
+		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
+
+		// 비밀번호 불일치
+		if (!passwordEncoder.matches(oldPassword, getCustomer.getPassword())) {
+			throw new BaseException(PASSWORD_NOT_MATCHED);
+		}
+
+		// 이전 비밀번호와 바꾸려는 비밀번호가 동일
+		if (passwordEncoder.matches(newPassword, getCustomer.getPassword())) {
+			throw new BaseException(PASSWORD_SAME_AS_OLD);
+		}
+
+		getCustomer.changePassword(passwordEncoder.encode(newPassword));
+		return CustomerResponse.of(getCustomer);
+	}
+
+	@Transactional
+	public CustomerResponse updateCustomerProfileUrl(String profileUrl, CustomUserDetails currentUser) {
+		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
+		getCustomer.changeProfileUrl(profileUrl);
+
+		return CustomerResponse.of(getCustomer);
+	}
+
+	@Transactional
+	public void deleteCustomer(
+		String password,
+		String accessToken,
+		String refreshToken,
+		CustomUserDetails currentUser
+	) {
+		if (!passwordEncoder.matches(password, currentUser.getPassword())) {
+			throw new BaseException(PASSWORD_NOT_MATCHED);
+		}
+
+		String email = currentUser.getUsername();
+
+		// redis에 저장된 refreshToken과 요청 본문으로 받은 refreshToken의 값이 다르거나
+		// refreshToken의 subject와 로그인한 유저의 이메일이 다를 경우 예외 발생
+		if (!refreshTokenRepository.getValueByKey(email).equals(refreshToken)
+			|| !tokenProvider.getSubject(refreshToken).equals(email)) {
+			throw new BaseException(INVALID_TOKEN);
+		}
+		refreshTokenRepository.delete(email);
+		customerRepository.softDeleteCustomer();
+		
+		String accessTokenWithoutBearer = tokenProvider.substringToken(accessToken);
+		long expiration = tokenProvider.extractClaims(accessTokenWithoutBearer).getExpiration().getTime();
+
+		refreshTokenRepository.addBlacklist(accessToken, expiration);
+	}
+
+	@Transactional
 	public GetAllAddressResponse addAddress(String address, CustomUserDetails currentUser) {
 		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
 
+		// 주소 앞뒤 공백 제거
 		String strippedAddress = address.strip();
 		addressRepository.save(Address.from(strippedAddress, INACTIVE, getCustomer));
 
@@ -70,6 +143,7 @@ public class CustomerService {
 		// 주소에 등록된 CustomerId와 로그인한 사용자의 id 값이 다를 경우 예외 발생
 		validateAddressOwnership(getAddress.getCustomer().getId(), currentUser.getUserInfo().getId());
 
+		// 주소 앞뒤 공백 제거
 		String strippedAddress = newAddress.strip();
 		if (getAddress.getAddress().equals(strippedAddress)) {
 			throw new BaseException(ADDRESS_SAME_AS_OLD);
@@ -106,11 +180,11 @@ public class CustomerService {
 			throw new BaseException(ADDRESS_STATUS_IS_ALREADY_ACTIVE);
 		}
 
+		// 최소 하나의 ACTIVE 상태가 없으면 예외 발생
 		boolean noActiveStatus = addressRepository.findAllByCustomerId(currentUser.getUserInfo().getId())
 			.stream()
 			.noneMatch(address -> address.getStatus() == ACTIVE);
 
-		// 최소 하나의 ACTIVE 상태가 없으면 예외 발생
 		if (noActiveStatus) {
 			throw new BaseException(NO_ACTIVE_ADDRESS);
 		}
@@ -136,75 +210,13 @@ public class CustomerService {
 			addressRepository.findAddressResponseByCustomerId(currentUser.getUserInfo().getId()));
 	}
 
-	@Transactional
-	public CustomerResponse updatePhoneNumber(String newPhoneNumber, CustomUserDetails currentUser) {
-		Customer getCustomer = getCustomerOrElseThrow(currentUser.getUsername());
-
-		if (customerRepository.existsByPhoneNumber(newPhoneNumber)) {
-			throw new BaseException(PHONE_NUMBER_DUPLICATED);
-		}
-
-		if (getCustomer.getPhoneNumber().equals(newPhoneNumber)) {
-			throw new BaseException(PHONE_NUMBER_SAME_AS_OLD);
-		}
-
-		getCustomer.changePhoneNumber(newPhoneNumber);
-
-		return CustomerResponse.of(getCustomer);
-	}
-
-	@Transactional
-	public CustomerResponse updatePassword(String oldPassword, String newPassword, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
-
-		if (!passwordEncoder.matches(oldPassword, getCustomer.getPassword())) {
-			throw new BaseException(PASSWORD_NOT_MATCHED);
-		}
-
-		if (passwordEncoder.matches(newPassword, getCustomer.getPassword())) {
-			throw new BaseException(PASSWORD_SAME_AS_OLD);
-		}
-
-		getCustomer.changePassword(passwordEncoder.encode(newPassword));
-		return CustomerResponse.of(getCustomer);
-	}
-
-	@Transactional
-	public CustomerResponse updateCustomerProfileUrl(String profileUrl, CustomUserDetails currentUser) {
-		Customer getCustomer = getActiveCustomerByEmail(currentUser.getUsername());
-		getCustomer.changeProfileUrl(profileUrl);
-
-		return CustomerResponse.of(getCustomer);
-	}
-
-	@Transactional
-	public void deleteCustomer(String password, String accessToken, CustomUserDetails currentUser) {
-		if (!passwordEncoder.matches(password, currentUser.getPassword())) {
-			throw new BaseException(PASSWORD_NOT_MATCHED);
-		}
-
-		customerRepository.softDeleteCustomer();
-
-		String email = currentUser.getUsername();
-		RefreshToken refreshToken = refreshTokenRepository.findByEmail(email)
-			.orElseThrow(() -> new BaseException(INVALID_TOKEN));
-
-		if (refreshTokenRepository.getValueByKey(email) != null
-			&& tokenProvider.getSubject(refreshToken.getRefreshToken()).equals(email)) {
-			refreshTokenRepository.delete(email);
-		}
-
-		String accessTokenWithoutBearer = tokenProvider.substringToken(accessToken);
-		long expiration = tokenProvider.extractClaims(accessTokenWithoutBearer).getExpiration().getTime();
-
-		refreshTokenRepository.addBlacklist(accessToken, expiration);
-	}
-
+	// 탈퇴한 사용자까지 조회
 	private Customer getCustomerOrElseThrow(String email) {
-		return customerRepository.findByEmailAndDeletedAt(email)
+		return customerRepository.findByEmail(email)
 			.orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 	}
 
+	// 탈퇴한 사용자 제외 조회
 	private Customer getActiveCustomerByEmail(String email) {
 		return customerRepository.findByEmailAndDeletedAt(email)
 			.orElseThrow(() -> new BaseException(USER_NOT_FOUND));
@@ -215,6 +227,7 @@ public class CustomerService {
 			.orElseThrow(() -> new BaseException(ADDRESS_NOT_FOUND));
 	}
 
+	// 로그인한 사용자가 다른 customer의 주소를 바꾸려고 하는지 확인
 	private void validateAddressOwnership(Long customerId, Long currentUserId) {
 		if (!customerId.equals(currentUserId)) {
 			throw new BaseException(ADDRESS_ACCESS_DENIED);
