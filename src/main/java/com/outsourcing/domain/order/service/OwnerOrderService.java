@@ -10,14 +10,12 @@ import com.outsourcing.domain.order.repository.OrderRepository;
 import com.outsourcing.domain.store.entity.Store;
 import com.outsourcing.domain.store.repository.StoreRepository;
 import com.outsourcing.domain.user.entity.Owner;
-import com.outsourcing.domain.user.entity.User;
 import com.outsourcing.domain.user.repository.OwnerRepository;
-import com.outsourcing.domain.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +38,7 @@ public class OwnerOrderService {
 
         // 3. 해당 가게가 사장님의 가게인지 확인.
         if (!store.getOwner().getId().equals(owner.getId())) {
-            throw new BaseException(ErrorCode.STORE_ID_AND_OWNER_ID_DIFFERENT);
+            throw new BaseException(ErrorCode.UNAUTHORIZED_STORE);
         }
 
         // 4. 상태값이 주문접수인 정보를 가져온다.
@@ -75,14 +73,14 @@ public class OwnerOrderService {
         return new OrderResponse(order);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<OrderResponse> getStoreOrders(Long ownerId, Long storeId, Pageable pageable) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("Store not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.STORE_NOT_FOUND));
 
         // 해당 가게가 ownerId의 가게인지 검증
         if (!store.getOwner().getId().equals(ownerId)) {
-            throw new BaseException(ErrorCode.STORE_ID_AND_OWNER_ID_DIFFERENT);
+            throw new BaseException(ErrorCode.UNAUTHORIZED_STORE);
         }
 
         return orderRepository.findByStoreId(storeId, pageable)

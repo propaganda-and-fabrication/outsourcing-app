@@ -17,11 +17,11 @@ import com.outsourcing.domain.user.dto.AddressDto;
 import com.outsourcing.domain.user.entity.User;
 import com.outsourcing.domain.user.repository.AddressRepository;
 import com.outsourcing.domain.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +34,7 @@ public class UserOrderService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
 
+    @Transactional
     public OrderResponse createOrder(Long userId, Long storeId, List<OrderItemResponse> menus) {
         // 1. 사용자 및 가게 조회
         User user = userRepository.findById(userId)
@@ -102,7 +103,7 @@ public class UserOrderService {
         return new OrderResponse(order);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<OrderResponse> getUserOrders(Long userId, Pageable pageable) {
         return orderRepository.findByUserId(userId, pageable)
                 .map(OrderResponse::new);

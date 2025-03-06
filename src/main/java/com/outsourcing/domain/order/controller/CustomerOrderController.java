@@ -25,7 +25,7 @@ public class CustomerOrderController {
     }
 
 
-    @PostMapping("/v1/customers/order")
+    @PostMapping("/v1/customers/orders")
     public Response<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest,
                                                @AuthenticationPrincipal CustomUserDetails user) {
         OrderResponse response = userOrderService.createOrder(user.getUserInfo().getId(),
